@@ -1,0 +1,59 @@
+{
+  "name": "sendmail",
+  "version": "0.0.1",
+  "type": "flogo:activity",
+  "ref": "github.com/cpsoares93/sendmail",
+  "title": "SendMail",
+  "description": "Send mail to recipient",
+  "author": "cpsoares93>",
+
+  "inputs":[
+    
+	{
+      "name": "A_server",
+      "type": "string",
+      "required": true
+    },
+	{
+      "name": "B_port",
+      "type": "string",
+      "required": true
+    },
+	{
+      "name": "C_sender",
+      "type": "string",
+      "required": true
+    },
+	{
+      "name": "D_apppassword",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "E_rcpnt",
+      "type": "string",
+      "required": true
+    },
+	{
+      "name": "F_sub",
+      "type": "string",
+      "required": true
+    },
+	{
+      "name": "G_body",
+      "type": "string",
+      "required": true
+    }
+  ],
+  "outputs": [
+    {
+      "name": "output",
+      "type": "string"
+    },
+	  {
+      "name": "SentTime",
+      "type": "string"
+    }
+
+  ]
+}

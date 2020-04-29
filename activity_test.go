@@ -1,4 +1,4 @@
-package main
+package sendmail
 
 import (
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"

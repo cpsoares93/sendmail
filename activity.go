@@ -3,16 +3,17 @@ package sendmail
 import (
 
 	"fmt"
+	"github.com/project-flogo/core/activity"
 	"log"
 	"strings"
 	"time"
 	"net/smtp"
-	"github.com/TIBCOSoftware/flogo-lib/core/activity"
-	"github.com/TIBCOSoftware/flogo-lib/logger"
+	//"github.com/TIBCOSoftware/flogo-lib/core/activity"
+	//"github.com/TIBCOSoftware/flogo-lib/logger"
 )
 
 // ActivityLog is the default logger for the Log Activity
-var activityLog = logger.GetLogger("activity-flogo-sendmail")
+//var activityLog = log.GetLogger("activity-flogo-sendmail")
 
 // MyActivity is a stub for your Activity implementation
 type sendmail struct {
@@ -72,7 +73,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	
 	err = smtp.SendMail(strings.Join(serv, ":"), auth, sender, to, msg)
 	if err != nil {
-		activityLog.Debugf("Error ", err)
+		//activityLog.Debugf("Error ", err)
 		fmt.Println("error: ", err)
 		return
 	}
@@ -82,7 +83,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 
 
 	// Set the output as part of the context
-	activityLog.Debugf("Activity has sent the mail Successfully")
+	//activityLog.Debugf("Activity has sent the mail Successfully")
 	fmt.Println("Activity has sent the mail Successfully")
 
 	ctx.SetOutput("output", "Mail_Sent_Successfully")

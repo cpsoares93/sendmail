@@ -34,13 +34,8 @@
       "type": "string",
       "required": true
     },
-	{
-      "name": "sub",
-      "type": "string",
-      "required": true
-    },
-	{
-      "name": "body",
+    {
+      "name": "appoitment",
       "type": "string",
       "required": true
     }

@@ -40,7 +40,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	sender := ctx.GetInput("sender").(string)
 	apppass := ctx.GetInput("apppassword").(string)
 	ercpnt := ctx.GetInput("rcpnt").(string)
-	appointment := "Teleconsulta De Terapia Da Fala";
+	appointment := ctx.GetInput("appointment").(string);
 	clinic := "Hospital Cuf descobertas"
 
 	auth := smtp.PlainAuth("", sender, apppass, server)

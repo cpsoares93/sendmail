@@ -1,14 +1,12 @@
 package sendmail
 
 import (
-
 	"fmt"
-	"log"
-	"strings"
-	"time"
-	"net/smtp"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 	"github.com/TIBCOSoftware/flogo-lib/logger"
+	"log"
+	"net/smtp"
+	"strings"
 )
 
 // ActivityLog is the default logger for the Log Activity
@@ -42,7 +40,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	fsub := ctx.GetInput("F_sub").(string)
 	gbody := ctx.GetInput("G_body").(string)
 	
-	dt := time.Now()
+	//dt := time.Now()
 	
 	// Set up authentication information.
 	//auth := smtp.PlainAuth(
@@ -86,6 +84,6 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	fmt.Println("Activity has sent the mail Successfully")
 
 	ctx.SetOutput("output", "Mail_Sent_Successfully")
-	ctx.SetOutput("SentTime", dt)
+	//ctx.SetOutput("SentTime", dt)
 	return true, nil
 }

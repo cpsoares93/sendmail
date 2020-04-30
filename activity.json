@@ -35,7 +35,7 @@
       "required": true
     },
     {
-      "name": "appoitment",
+      "name": "appointment",
       "type": "string",
       "required": true
     }

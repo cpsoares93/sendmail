@@ -1,4 +1,4 @@
-package sendmail
+package sendemail
 
 import (
 	"io/ioutil"

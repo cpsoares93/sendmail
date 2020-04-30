@@ -10,37 +10,37 @@
   "inputs":[
     
 	{
-      "name": "A_server",
+      "name": "server",
       "type": "string",
       "required": true
     },
 	{
-      "name": "B_port",
+      "name": "port",
       "type": "string",
       "required": true
     },
 	{
-      "name": "C_sender",
+      "name": "sender",
       "type": "string",
       "required": true
     },
 	{
-      "name": "D_apppassword",
+      "name": "apppassword",
       "type": "string",
       "required": true
     },
     {
-      "name": "E_rcpnt",
+      "name": "rcpnt",
       "type": "string",
       "required": true
     },
 	{
-      "name": "F_sub",
+      "name": "sub",
       "type": "string",
       "required": true
     },
 	{
-      "name": "G_body",
+      "name": "body",
       "type": "string",
       "required": true
     }

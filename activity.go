@@ -40,8 +40,11 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	sender := ctx.GetInput("sender").(string)
 	apppass := ctx.GetInput("apppassword").(string)
 	ercpnt := ctx.GetInput("rcpnt").(string)
-	appointment := ctx.GetInput("appointment")
+	appointment := ctx.GetInput("appointment").(*string)
 	clinic := "Hospital Cuf descobertas"
+
+	str := *appointment;
+	fmt.Println(str)
 
 	appointment1 := fmt.Sprintf("%v",appointment)
 	fmt.Println(appointment1)

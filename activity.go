@@ -60,14 +60,14 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		Local string
 	}{
 		Name: "Carolina Soares",
-		Appointment:  appointment1,
+		Appointment:  str,
 		Speciality: "Terapia da Fala",
 		Practitioner: "Dra. X",
 		Date: "27-07-2020",
 		Hour: "14:00",
 		Local: "ED2",
 	}
-	r := NewRequest([]string{ercpnt}, appointment1 + " - " + clinic , "")
+	r := NewRequest([]string{ercpnt}, str + " - " + clinic , "")
 	error1 := r.ParseTemplate("template.html", templateData)
 	if error1 := r.ParseTemplate("template.html", templateData); error1 == nil {
 		ok, _ := r.SendEmail(auth, port)

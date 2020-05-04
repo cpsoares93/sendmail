@@ -44,14 +44,14 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	speciality := ctx.GetInput("speciality").(*string)
 	patient := ctx.GetInput("patient").(*string)
 	practitioner := ctx.GetInput("practitioner").(*string)
-	//date := ctx.GetInput("date").(*string)
+	date := ctx.GetInput("date").(*string)
 	clinic := "?"
 
 	clientAppointment:= *appointment
 	clientsSpeciality := *speciality
 	clientPatient := *patient
 	clientPractitioner := *practitioner
-	clientDate := "teste"
+	clientDate := *date
 
 	auth := smtp.PlainAuth("", sender, apppass, server)
 	templateData := struct {

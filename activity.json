@@ -38,26 +38,6 @@
       "name": "appointment",
       "type": "string",
       "required": true
-    },
-    {
-      "name": "speciality",
-      "type": "string",
-      "required": true
-    },
-    {
-      "name": "patient",
-      "type": "string",
-      "required": true
-    },
-    {
-      "name": "practitioner",
-      "type": "string",
-      "required": true
-    },
-    {
-      "name": "date",
-      "type": "string",
-      "required": true
     }
   ],
   "outputs": [

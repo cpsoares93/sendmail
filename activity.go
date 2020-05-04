@@ -41,17 +41,17 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	apppass := ctx.GetInput("apppassword").(string)
 	ercpnt := ctx.GetInput("rcpnt").(string)
 	appointment := ctx.GetInput("appointment").(*string)
-	speciality := ctx.GetInput("speciality").(*string)
-	patient := ctx.GetInput("patient").(*string)
-	practitioner := ctx.GetInput("practitioner").(*string)
-	date := ctx.GetInput("date").(*string)
+	//speciality := ctx.GetInput("speciality").(*string)
+	//patient := ctx.GetInput("patient").(*string)
+	//practitioner := ctx.GetInput("practitioner").(*string)
+	//date := ctx.GetInput("date").(*string)
 	clinic := "?"
 
 	clientAppointment:= *appointment
-	clientsSpeciality := *speciality
-	clientPatient := *patient
-	clientPractitioner := *practitioner
-	clientDate := *date
+	clientsSpeciality := "teste"
+	clientPatient := "teste"
+	clientPractitioner := "teste"
+	clientDate := "teste"
 
 	auth := smtp.PlainAuth("", sender, apppass, server)
 	templateData := struct {

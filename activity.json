@@ -43,6 +43,11 @@
       "name": "patient",
       "type": "string",
       "required": true
+    },
+    {
+      "name": "speciality",
+      "type": "string",
+      "required": true
     }
   ],
   "outputs": [

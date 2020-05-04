@@ -41,10 +41,17 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	apppass := ctx.GetInput("apppassword").(string)
 	ercpnt := ctx.GetInput("rcpnt").(string)
 	appointment := ctx.GetInput("appointment").(*string)
-	clinic := "Hospital Cuf descobertas"
+	speciality := ctx.GetInput("speciality").(*string)
+	patient := ctx.GetInput("patient").(*string)
+	practitioner := ctx.GetInput("practitioner").(*string)
+	date := ctx.GetInput("date").(*string)
+	clinic := "?"
 
-	clientAppointment:= *appointment;
-	fmt.Println(clientAppointment)
+	clientAppointment:= *appointment
+	clientsSpeciality := *speciality
+	clientPatient := *patient
+	clientPractitioner := *practitioner
+	clientDate := *date
 
 	auth := smtp.PlainAuth("", sender, apppass, server)
 	templateData := struct {
@@ -56,11 +63,11 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		Hour string
 		Local string
 	}{
-		Name: "Carolina Soares",
+		Name: clientPatient,
 		Appointment:  clientAppointment,
-		Speciality: "Terapia da Fala",
-		Practitioner: "Dra. X",
-		Date: "27-07-2020",
+		Speciality: clientsSpeciality,
+		Practitioner: clientPractitioner,
+		Date: clientDate,
 		Hour: "14:00",
 		Local: "?",
 	}

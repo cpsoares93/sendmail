@@ -39,7 +39,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	port := ctx.GetInput("port").(string)
 	sender := ctx.GetInput("sender").(string)
 	apppass := ctx.GetInput("apppassword").(string)
-	ercpnt := ctx.GetInput("rcpnt").(string)
+	vercpnt := ctx.GetInput("rcpnt").(*string)
 	appointment := ctx.GetInput("appointment").(*string)
 	speciality := ctx.GetInput("speciality").(*string)
 	patient := ctx.GetInput("patient").(*string)
@@ -51,6 +51,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	clientsSpeciality := *speciality
 	clientPatient := *patient
 	clientPractitioner := *practitioner
+	ercpnt := *vercpnt;
 	//clientDate := *date
 
 	auth := smtp.PlainAuth("", sender, apppass, server)

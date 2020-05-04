@@ -38,6 +38,11 @@
       "name": "appointment",
       "type": "string",
       "required": true
+    },
+    {
+      "name": "patient",
+      "type": "string",
+      "required": true
     }
   ],
   "outputs": [

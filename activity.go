@@ -40,8 +40,9 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	sender := ctx.GetInput("sender").(string)
 	apppass := ctx.GetInput("apppassword").(string)
 	ercpnt := ctx.GetInput("rcpnt").(string)
-	appointment := ctx.GetInput("appointment").(string);
+	appointment := ctx.GetInput("appointment");
 	clinic := "Hospital Cuf descobertas"
+
 
 	auth := smtp.PlainAuth("", sender, apppass, server)
 	templateData := struct {
@@ -54,14 +55,14 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		Local string
 	}{
 		Name: "Carolina Soares",
-		Appointment:  appointment,
+		Appointment:  appointment.(string),
 		Speciality: "Terapia da Fala",
 		Practitioner: "Dra. X",
 		Date: "27-07-2020",
 		Hour: "14:00",
 		Local: "ED2",
 	}
-	r := NewRequest([]string{ercpnt}, appointment + " - " + clinic , "")
+	r := NewRequest([]string{ercpnt}, appointment.(string) + " - " + clinic , "")
 	error1 := r.ParseTemplate("template.html", templateData)
 	if error1 := r.ParseTemplate("template.html", templateData); error1 == nil {
 		ok, _ := r.SendEmail(auth, port)

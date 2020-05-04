@@ -53,6 +53,11 @@
       "name": "practitioner",
       "type": "string",
       "required": true
+    },
+    {
+      "name": "date",
+      "type": "string",
+      "required": true
     }
   ],
   "outputs": [

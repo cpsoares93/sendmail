@@ -40,11 +40,11 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	sender := ctx.GetInput("sender").(string)
 	apppass := ctx.GetInput("apppassword").(string)
 	ercpnt := ctx.GetInput("rcpnt").(string)
-	appointment1 := ctx.GetInput("appointment").(string)
+	appointment := ctx.GetInput("appointment")
 	clinic := "Hospital Cuf descobertas"
 
-	//var appointment1 string = fmt.Sprintf("%v",&appointment)
-
+	appointment1 := fmt.Sprintf("%v",appointment)
+	fmt.Println(appointment1)
 
 	auth := smtp.PlainAuth("", sender, apppass, server)
 	templateData := struct {

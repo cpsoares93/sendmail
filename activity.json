@@ -48,6 +48,11 @@
       "name": "speciality",
       "type": "string",
       "required": true
+    },
+    {
+      "name": "practitioner",
+      "type": "string",
+      "required": true
     }
   ],
   "outputs": [

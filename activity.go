@@ -43,14 +43,14 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	appointment := ctx.GetInput("appointment").(*string)
 	speciality := ctx.GetInput("speciality").(*string)
 	patient := ctx.GetInput("patient").(*string)
-	//practitioner := ctx.GetInput("practitioner").(*string)
+	practitioner := ctx.GetInput("practitioner").(*string)
 	//date := ctx.GetInput("date").(*string)
 	clinic := "?"
 
 	clientAppointment:= *appointment
 	clientsSpeciality := *speciality
 	clientPatient := *patient
-	clientPractitioner := "teste"
+	clientPractitioner := *practitioner
 	clientDate := "teste"
 
 	auth := smtp.PlainAuth("", sender, apppass, server)

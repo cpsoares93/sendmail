@@ -56,7 +56,7 @@
     },
     {
       "name": "date",
-      "type": "time",
+      "type": "string",
       "required": true
     }
   ],

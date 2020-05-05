@@ -7,6 +7,7 @@ import (
 	"github.com/TIBCOSoftware/flogo-lib/logger"
 	"html/template"
 	"net/smtp"
+	"time"
 )
 
 type Appointment struct {
@@ -44,7 +45,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	speciality := ctx.GetInput("speciality").(*string)
 	patient := ctx.GetInput("patient").(*string)
 	practitioner := ctx.GetInput("practitioner").(*string)
-	date := ctx.GetInput("date").(*string)
+	date := ctx.GetInput("date").(*time.Time)
 	clinic := "?"
 
 	clientAppointment:= *appointment
@@ -79,6 +80,8 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		fmt.Println(ok)
 	}
 	fmt.Println(error1)
+
+
 
 
 	

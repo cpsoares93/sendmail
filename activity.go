@@ -45,7 +45,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	speciality := ctx.GetInput("speciality").(*string)
 	patient := ctx.GetInput("patient").(*string)
 	practitioner := ctx.GetInput("practitioner").(*string)
-	date := ctx.GetInput("date").(*time.Time)
+	date := ctx.GetInput("date")
 	clinic := "?"
 
 	clientAppointment:= *appointment
@@ -53,7 +53,9 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	clientPatient := *patient
 	clientPractitioner := *practitioner
 	ercpnt := *vercpnt;
-	clientDate := *date
+	clientDate := "?"
+
+	fmt.Println(date)
 
 	auth := smtp.PlainAuth("", sender, apppass, server)
 	templateData := struct {

@@ -7,7 +7,6 @@ import (
 	"github.com/TIBCOSoftware/flogo-lib/logger"
 	"html/template"
 	"net/smtp"
-	"time"
 )
 
 type Appointment struct {

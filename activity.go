@@ -46,7 +46,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	patient := ctx.GetInput("patient").(*string)
 	practitioner := ctx.GetInput("practitioner").(*string)
 	date := ctx.GetInput("date").(*string)
-	template:= ctx.GetInput("template").(*string)
+	template:= ctx.GetInput("template").(string)
 	clinic := "?"
 
 	clientAppointment:= *appointment
@@ -55,7 +55,6 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	clientPractitioner := *practitioner
 	ercpnt := *vercpnt
 	clientDate := *date
-	client_template := *template
 
 	fdate := strings.Split(clientDate, " ")
 
@@ -80,8 +79,8 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		Local: "?",
 	}
 	r := NewRequest([]string{ercpnt}, clientAppointment + " - " + clinic , "")
-	error1 := r.ParseTemplate(client_template + ".html", templateData)
-	if error1 := r.ParseTemplate(client_template + ".html", templateData); error1 == nil {
+	error1 := r.ParseTemplate(template + ".html", templateData)
+	if error1 := r.ParseTemplate(template + ".html", templateData); error1 == nil {
 		ok, _ := r.SendEmail(auth, port, sender)
 		fmt.Println(ok)
 	}

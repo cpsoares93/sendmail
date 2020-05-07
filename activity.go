@@ -46,6 +46,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	patient := ctx.GetInput("patient").(*string)
 	practitioner := ctx.GetInput("practitioner").(*string)
 	date := ctx.GetInput("date").(*string)
+	template:= ctx.GetInput("template").(*string)
 	clinic := "?"
 
 	clientAppointment:= *appointment
@@ -54,6 +55,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	clientPractitioner := *practitioner
 	ercpnt := *vercpnt
 	clientDate := *date
+	client_template := *template
 
 	fdate := strings.Split(clientDate, " ")
 
@@ -78,39 +80,13 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		Local: "?",
 	}
 	r := NewRequest([]string{ercpnt}, clientAppointment + " - " + clinic , "")
-	error1 := r.ParseTemplate("template.html", templateData)
-	if error1 := r.ParseTemplate("template.html", templateData); error1 == nil {
-		ok, _ := r.SendEmail(auth, port)
+	error1 := r.ParseTemplate(client_template + ".html", templateData)
+	if error1 := r.ParseTemplate(client_template + ".html", templateData); error1 == nil {
+		ok, _ := r.SendEmail(auth, port, sender)
 		fmt.Println(ok)
 	}
 	fmt.Println(error1)
-
-
-
-
-	
-	//dt := time.Now()
-	
-	//auth := smtp.PlainAuth("", sender, apppass, server,)
-	//auth = smtp.PlainAuth("", sender, apppass, server)
-	//templateData := struct {
-	//	Name string
-	//	URL  string
-	//}{
-	//	Name: "Dhanush",
-	//	URL:  "http://geektrust.in",
-	//}
-	//r := NewRequest([]string{"junk@junk.com"}, "Hello Junk!", "Hello, World!")
-	//error := r.ParseTemplate("template.html", templateData)
-	//if err := r.ParseTemplate("template.html", templateData); err == nil {
-	//	ok, _ := r.SendEmail()
-	//	fmt.Println(ok)
-	//}
-
-	
-
 	ctx.SetOutput("output", "Mail_Sent_Successfully")
-	////ctx.SetOutput("SentTime", dt)
 	return true, nil
 }
 
@@ -129,14 +105,14 @@ func NewRequest(to []string, subject, body string) *Request {
 	}
 }
 
-func (r *Request) SendEmail(auth smtp.Auth, port string) (bool, error) {
+func (r *Request) SendEmail(auth smtp.Auth, port string, sender string) (bool, error) {
 	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n";
 	subject := "Subject: " + r.subject + "\n"
 	msg := []byte(subject + mime + "\n" + r.body)
 
 	addr := "smtp.gmail.com:"+port
 
-	if err := smtp.SendMail(addr, auth, "carolinasoares.cps@gmail.com", r.to, msg); err != nil {
+	if err := smtp.SendMail(addr, auth, sender, r.to, msg); err != nil {
 		return false, err
 	}
 	return true, nil

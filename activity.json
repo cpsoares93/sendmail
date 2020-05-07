@@ -47,15 +47,20 @@
     {
       "name": "speciality",
       "type": "string",
-      "required": true
+      "required": false
     },
     {
       "name": "practitioner",
       "type": "string",
-      "required": true
+      "required": false
     },
     {
       "name": "date",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "template",
       "type": "string",
       "required": true
     }

@@ -42,37 +42,16 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	apppass := ctx.GetInput("apppassword").(string)
 	vercpnt := ctx.GetInput("rcpnt").(string)
 
-	fmt.Println(vercpnt);
-//
-//
-// 	appointment := ctx.GetInput("appointment").(string)
+	appointment := ctx.GetInput("appointment").(string)
 
-// 	vercpnt := "carolina.soares@litthub.com"
-
-
-	appointment := "teste"
-
-	speciality := "teste"
-	patient := "teste"
-	practitioner := "teste"
-	date := "21-01-2019 00:00"
-	template := "cancelledtemplate"
-
-// 	speciality := ctx.GetInput("speciality").(string)
-// 	patient := ctx.GetInput("patient").(string)
-// 	practitioner := ctx.GetInput("practitioner").(string)
-// 	date := ctx.GetInput("date").(string)
-// 	template:= ctx.GetInput("template").(string)
+	speciality := ctx.GetInput("speciality").(string)
+	patient := ctx.GetInput("patient").(string)
+	practitioner := ctx.GetInput("practitioner").(string)
+	date := ctx.GetInput("date").(string)
+	template:= ctx.GetInput("template").(string)
 	clinic := "?"
 
-	clientAppointment:= appointment
-	clientsSpeciality := speciality
-	clientPatient := patient
-	clientPractitioner := practitioner
-	ercpnt := vercpnt
-	clientDate := date
-
-	fdate := strings.Split(clientDate, " ")
+	fdate := strings.Split(date, " ")
 
 	auth := smtp.PlainAuth("", sender, apppass, server)
 	templateData := struct {
@@ -84,15 +63,15 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		Hour string
 		Local string
 	}{
-		Name: clientPatient,
-		Appointment:  clientAppointment,
-		Speciality: clientsSpeciality,
-		Practitioner: clientPractitioner,
+		Name: patient,
+		Appointment:  appointment,
+		Speciality: speciality,
+		Practitioner: practitioner,
 		Date: fdate[0],
 		Hour: fdate[1],
 		Local: "?",
 	}
-	r := NewRequest([]string{ercpnt}, clientAppointment + " - " + clinic , "")
+	r := NewRequest([]string{ercpnt}, appointment + " - " + clinic , "")
 	error1 := r.ParseTemplate(template + ".html", templateData)
 	if error1 := r.ParseTemplate(template + ".html", templateData); error1 == nil {
 		ok, _ := r.SendEmail(auth, port, sender)

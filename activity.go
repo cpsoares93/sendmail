@@ -40,10 +40,16 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	port := ctx.GetInput("port").(string)
 	sender := ctx.GetInput("sender").(string)
 	apppass := ctx.GetInput("apppassword").(string)
-	vercpnt := ctx.GetInput("rcpnt").(string)
+// 	vercpnt := ctx.GetInput("rcpnt").(string)
+//
+//
+// 	appointment := ctx.GetInput("appointment").(string)
+
+	vercpnt := "carolina.soares@litthub.com"
 
 
-	appointment := ctx.GetInput("appointment").(string)
+	appointment := "teste"
+
 	speciality := "teste"
 	patient := "teste"
 	practitioner := "teste"

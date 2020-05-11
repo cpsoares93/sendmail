@@ -41,24 +41,30 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	sender := ctx.GetInput("sender").(string)
 	apppass := ctx.GetInput("apppassword").(string)
 	vercpnt := ctx.GetInput("rcpnt").(string)
+
+
 	appointment := ctx.GetInput("appointment").(string)
-	speciality := ctx.GetInput("speciality").(string)
-	patient := ctx.GetInput("patient").(string)
-	practitioner := ctx.GetInput("practitioner").(string)
-	date := ctx.GetInput("date").(string)
-	template:= ctx.GetInput("template").(string)
+	speciality := "teste"
+	patient := "teste"
+	practitioner := "teste"
+	date := "21-01-2019 00:00"
+	template : = "cancelledtemplate"
+
+// 	speciality := ctx.GetInput("speciality").(string)
+// 	patient := ctx.GetInput("patient").(string)
+// 	practitioner := ctx.GetInput("practitioner").(string)
+// 	date := ctx.GetInput("date").(string)
+// 	template:= ctx.GetInput("template").(string)
 	clinic := "?"
 
-	clientAppointment:= appointment
-	clientsSpeciality := speciality
-	clientPatient := patient
-	clientPractitioner := practitioner
-	ercpnt := vercpnt
-	clientDate := date
+// 	clientAppointment:= appointment
+// 	clientsSpeciality := speciality
+// 	clientPatient := patient
+// 	clientPractitioner := practitioner
+// 	ercpnt := vercpnt
+// 	clientDate := date
 
 	fdate := strings.Split(clientDate, " ")
-
-	fmt.Println(date)
 
 	auth := smtp.PlainAuth("", sender, apppass, server)
 	templateData := struct {

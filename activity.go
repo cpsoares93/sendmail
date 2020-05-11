@@ -57,12 +57,12 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 // 	template:= ctx.GetInput("template").(string)
 	clinic := "?"
 
-// 	clientAppointment:= appointment
-// 	clientsSpeciality := speciality
-// 	clientPatient := patient
-// 	clientPractitioner := practitioner
-// 	ercpnt := vercpnt
-// 	clientDate := date
+	clientAppointment:= appointment
+	clientsSpeciality := speciality
+	clientPatient := patient
+	clientPractitioner := practitioner
+	ercpnt := vercpnt
+	clientDate := date
 
 	fdate := strings.Split(clientDate, " ")
 

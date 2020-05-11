@@ -48,7 +48,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	patient := "teste"
 	practitioner := "teste"
 	date := "21-01-2019 00:00"
-	template : = "cancelledtemplate"
+	template := "cancelledtemplate"
 
 // 	speciality := ctx.GetInput("speciality").(string)
 // 	patient := ctx.GetInput("patient").(string)

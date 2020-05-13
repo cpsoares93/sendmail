@@ -40,16 +40,17 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	port := ctx.GetInput("port").(string)
 	sender := ctx.GetInput("sender").(string)
 	apppass := ctx.GetInput("apppassword").(string)
+
+
 	ercpnt := ctx.GetInput("rcpnt").(string)
-
 	appointment := ctx.GetInput("appointment").(string)
-
 	speciality := ctx.GetInput("speciality").(string)
 	patient := ctx.GetInput("patient").(string)
 	practitioner := ctx.GetInput("practitioner").(string)
 	date := ctx.GetInput("date").(string)
+	local := ctx.GetInput("local").(string);
 	template:= ctx.GetInput("template").(string)
-	clinic := "?"
+	clinic := ctx.GetInput("hospital").(string);
 
 	fdate := strings.Split(date, " ")
 
@@ -69,7 +70,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		Practitioner: practitioner,
 		Date: fdate[0],
 		Hour: fdate[1],
-		Local: "?",
+		Local: local,
 	}
 	r := NewRequest([]string{ercpnt}, appointment + " - " + clinic , "")
 	error1 := r.ParseTemplate(template + ".html", templateData)

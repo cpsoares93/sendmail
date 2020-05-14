@@ -159,10 +159,13 @@ func NewRequest(to []string, subject, body string) *Request {
 }
 
 func (r *Request) SendEmail(auth smtp.Auth, port string, sender string, filename string) (bool, error) {
-	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";Content-Transfer-Encoding: 7bit\n\n";
+	mime := "MIME-version: 1.0;\nContent-Type: multipart/mixed; charset=\"UTF-8\";Content-Transfer-Encoding: 7bit\n\n";
 	subject := "Subject: " + r.subject + "\n"
 
 	fmt.Println(filename)
+
+	test := "Content-Type: text/html; charset=\"utf-8\"\r\n"
+	test += "Content-Transfer-Encoding: 7bit\r\n"
 
 	attachment := "Content-Type: text/calendar; charset=\"utf-8\"\r\n"
 	attachment += "Content-Transfer-Encoding: base64\r\n"
@@ -172,8 +175,8 @@ func (r *Request) SendEmail(auth smtp.Auth, port string, sender string, filename
 	if fileErr != nil {
 		log.Panic(fileErr)
 	}
-	r.body += "\r\n" + base64.StdEncoding.EncodeToString(rawFile)
-	msg := []byte(subject + mime + "\n" + r.body + attachment)
+	attachment += "\r\n" + base64.StdEncoding.EncodeToString(rawFile)
+	msg := []byte(subject + mime + "\n" + test + "\n" + r.body + attachment)
 
 
 	addr := "smtp.gmail.com:"+port

@@ -162,9 +162,11 @@ func (r *Request) SendEmail(auth smtp.Auth, port string, sender string, filename
 	mime := "MIME-version: 1.0;\nContent-Type: multipart/mixed; charset=\"UTF-8\";Content-Transfer-Encoding: 7bit\n\n";
 	subject := "Subject: " + r.subject + "\n"
 
+	fmt.Println(filename)
+
 	attachment := "Content-Type: text/calendar; charset=\"utf-8\"\r\n"
 	attachment += "Content-Transfer-Encoding: base64\r\n"
-	attachment += "Content-Disposition: attachment;filename=\"invite.ics\"\r\n"
+	attachment += "Content-Disposition: attachment;filename=\""+ filename +"\"\r\n"
 	//read file
 	rawFile, fileErr := ioutil.ReadFile(filename)
 	if fileErr != nil {

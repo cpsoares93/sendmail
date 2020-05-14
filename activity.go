@@ -2,19 +2,18 @@ package sendmail
 
 import (
 	"bytes"
+	"encoding/base64"
 	"fmt"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 	"github.com/TIBCOSoftware/flogo-lib/logger"
 	"github.com/arran4/golang-ical"
 	"html/template"
 	"io/ioutil"
+	"log"
 	"net/smtp"
 	"os"
 	"strings"
 	"time"
-	"encoding/base64"
-	"log"
-
 )
 
 type Appointment struct {
@@ -163,16 +162,16 @@ func (r *Request) SendEmail(auth smtp.Auth, port string, sender string, filename
 	mime := "MIME-version: 1.0;\nContent-Type: multipart/mixed; charset=\"UTF-8\";Content-Transfer-Encoding: 7bit\n\n";
 	subject := "Subject: " + r.subject + "\n"
 
-	r.body += "Content-Type: text/plain; charset=\"utf-8\"\r\n"
-	r.body += "Content-Transfer-Encoding: base64\r\n"
-	r.body += "Content-Disposition: attachment;filename=\"invite.ics\"\r\n"
+	attachment := "Content-Type: text/calendar; charset=\"utf-8\"\r\n"
+	attachment += "Content-Transfer-Encoding: base64\r\n"
+	attachment += "Content-Disposition: attachment;filename=\"invite.ics\"\r\n"
 	//read file
 	rawFile, fileErr := ioutil.ReadFile(filename)
 	if fileErr != nil {
 		log.Panic(fileErr)
 	}
 	r.body += "\r\n" + base64.StdEncoding.EncodeToString(rawFile)
-	msg := []byte(subject + mime + "\n" + r.body)
+	msg := []byte(subject + mime + "\n" + r.body + attachment)
 
 
 	addr := "smtp.gmail.com:"+port

@@ -50,9 +50,10 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	date := ctx.GetInput("i_date").(string)
 	local := ctx.GetInput("h_local").(string);
 	template:= ctx.GetInput("p_template").(string)
-	clinic := ctx.GetInput("g_hospital").(string);
-	meet := ctx.GetInput("n_meet").(string);
-	subject := ctx.GetInput("o_subject").(string);
+	clinic := ctx.GetInput("g_hospital").(string)
+	meet := ctx.GetInput("n_meet").(string)
+	subject := ctx.GetInput("o_subject").(string)
+	link_footer := ctx.GetInput("q_link_footer").(string)
 	fdate := strings.Split(date, " ")
 
 	hour := strings.Split(fdate[1], ":");
@@ -69,6 +70,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		Local string
 		Meet string
 		Hospital string
+		Footer string
 	}{
 		Name: patient,
 		Appointment:  appointment,
@@ -79,6 +81,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		Local: local,
 		Meet: meet,
 		Hospital: clinic,
+		Footer: link_footer,
 	}
 	r := NewRequest([]string{ercpnt}, subject , "")
 	error1 := r.ParseTemplate(template + ".html", templateData)

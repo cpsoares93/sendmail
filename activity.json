@@ -85,7 +85,12 @@
       "required": true
     },
     {
-      "name": "q_link_footer",
+      "name": "q_image_footer",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "r_link_footer",
       "type": "string",
       "required": true
     }

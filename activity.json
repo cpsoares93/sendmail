@@ -72,7 +72,7 @@
     {
       "name": "meet",
       "type": "string",
-      "required": true
+      "required": false
     },
     {
       "name": "subject",

@@ -5,9 +5,16 @@ import (
 	"fmt"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 	"github.com/TIBCOSoftware/flogo-lib/logger"
+	"github.com/arran4/golang-ical"
 	"html/template"
+	"io/ioutil"
 	"net/smtp"
+	"os"
 	"strings"
+	"time"
+	"encoding/base64"
+	"log"
+
 )
 
 type Appointment struct {
@@ -61,6 +68,43 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	hour := strings.Split(fdate[1], ":");
 
 
+
+
+	cal := ics.NewCalendar()
+	cal.SetMethod(ics.MethodPublish)
+	cal.SetProductId(" Integrations")
+	cal.SetVersion("2.0")
+	event := cal.AddEvent("teste@google.com")
+	event.SetDtStampTime(time.Now())
+	event.SetOrganizer("sender@domain", ics.WithCN("Saúde"))
+	event.SetStartAt(time.Now())
+	event.SetEndAt(time.Now())
+	event.SetStatus(ics.ObjectStatusConfirmed)
+	event.SetDescription("teste")
+	event.SetSummary("teste1")
+
+
+	tmpFile, err := ioutil.TempFile(os.TempDir(), "*.ics")
+	if err != nil {
+		log.Fatal("Cannot create temporary file", err)
+	}
+
+	// Remember to clean up the file afterwards
+	//defer os.Remove(tmpFile.Name())
+
+	fmt.Println("Created File: " + tmpFile.Name())
+
+	// Example writing to the file
+	text := []byte(cal.Serialize())
+	if _, err = tmpFile.Write(text); err != nil {
+		log.Fatal("Failed to write to temporary file", err)
+	}
+
+	// Close the file
+	if err := tmpFile.Close(); err != nil {
+		log.Fatal(err)
+	}
+
 	auth := smtp.PlainAuth("", sender, apppass, server)
 	templateData := struct {
 		Name string
@@ -92,7 +136,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	r := NewRequest([]string{ercpnt}, subject , "")
 	error1 := r.ParseTemplate(template + ".html", templateData)
 	if error1 := r.ParseTemplate(template + ".html", templateData); error1 == nil {
-		ok, _ := r.SendEmail(auth, port, sender)
+		ok, _ := r.SendEmail(auth, port, sender, tmpFile.Name())
 		fmt.Println(ok)
 	}
 	fmt.Println(error1)
@@ -115,10 +159,21 @@ func NewRequest(to []string, subject, body string) *Request {
 	}
 }
 
-func (r *Request) SendEmail(auth smtp.Auth, port string, sender string) (bool, error) {
-	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n";
+func (r *Request) SendEmail(auth smtp.Auth, port string, sender string, filename string) (bool, error) {
+	mime := "MIME-version: 1.0;\nContent-Type: multipart/mixed; charset=\"UTF-8\";Content-Transfer-Encoding: 7bit\n\n";
 	subject := "Subject: " + r.subject + "\n"
+
+	r.body += "Content-Type: text/plain; charset=\"utf-8\"\r\n"
+	r.body += "Content-Transfer-Encoding: base64\r\n"
+	r.body += "Content-Disposition: attachment;filename=\"invite.ics\"\r\n"
+	//read file
+	rawFile, fileErr := ioutil.ReadFile(filename)
+	if fileErr != nil {
+		log.Panic(fileErr)
+	}
+	r.body += "\r\n" + base64.StdEncoding.EncodeToString(rawFile)
 	msg := []byte(subject + mime + "\n" + r.body)
+
 
 	addr := "smtp.gmail.com:"+port
 

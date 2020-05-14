@@ -10,77 +10,77 @@
   "inputs":[
     
 	{
-      "name": "server",
+      "name": "a_server",
       "type": "string",
       "required": true
     },
 	{
-      "name": "port",
+      "name": "b_port",
       "type": "string",
       "required": true
     },
 	{
-      "name": "sender",
+      "name": "c_sender",
       "type": "string",
       "required": true
     },
 	{
-      "name": "apppassword",
+      "name": "d_password",
       "type": "string",
       "required": true
     },
     {
-      "name": "rcpnt",
+      "name": "l_patient_contact",
       "type": "string",
       "required": true
     },
     {
-      "name": "appointment",
+      "name": "e_appointment",
       "type": "string",
       "required": true
     },
     {
-      "name": "patient",
+      "name": "j_patient",
       "type": "string",
       "required": true
     },
     {
-      "name": "speciality",
+      "name": "f_speciality",
       "type": "string",
       "required": false
     },
     {
-      "name": "practitioner",
+      "name": "m_practitioner",
       "type": "string",
       "required": false
     },
     {
-      "name": "date",
+      "name": "i_date",
       "type": "string",
       "required": true
     },
     {
-      "name": "local",
+      "name": "h_local",
       "type": "string",
       "required": true
     },
     {
-      "name": "hospital",
+      "name": "g_hospital",
       "type": "string",
       "required": true
     },
     {
-      "name": "meet",
+      "name": "n_meet",
       "type": "string",
       "required": false
     },
     {
-      "name": "subject",
+      "name": "o_subject",
       "type": "string",
       "required": true
     },
     {
-      "name": "template",
+      "name": "p_template",
       "type": "string",
       "required": true
     }

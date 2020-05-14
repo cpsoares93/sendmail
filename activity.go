@@ -36,26 +36,26 @@ func (a *sendmail) Metadata() *activity.Metadata {
 // Eval implements activity.Activity.Eval
 func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 
-	server := ctx.GetInput("server").(string)
-	port := ctx.GetInput("port").(string)
-	sender := ctx.GetInput("sender").(string)
-	apppass := ctx.GetInput("apppassword").(string)
+	server := ctx.GetInput("a_server").(string)
+	port := ctx.GetInput("b_port").(string)
+	sender := ctx.GetInput("c_sender").(string)
+	apppass := ctx.GetInput("d_ppassword").(string)
 
 
-	ercpnt := ctx.GetInput("rcpnt").(string)
-	appointment := ctx.GetInput("appointment").(string)
-	speciality := ctx.GetInput("speciality").(string)
-	patient := ctx.GetInput("patient").(string)
-	practitioner := ctx.GetInput("practitioner").(string)
-	date := ctx.GetInput("date").(string)
-	local := ctx.GetInput("local").(string);
-	template:= ctx.GetInput("template").(string)
-	clinic := ctx.GetInput("hospital").(string);
-	meet := ctx.GetInput("meet").(string);
-	subject := ctx.GetInput("subject").(string);
+	ercpnt := ctx.GetInput("l_patient_contact").(string)
+	appointment := ctx.GetInput("e_appointment").(string)
+	speciality := ctx.GetInput("f_speciality").(string)
+	patient := ctx.GetInput("j_patient").(string)
+	practitioner := ctx.GetInput("m_practitioner").(string)
+	date := ctx.GetInput("i_date").(string)
+	local := ctx.GetInput("h_local").(string);
+	template:= ctx.GetInput("p_template").(string)
+	clinic := ctx.GetInput("g_hospital").(string);
+	meet := ctx.GetInput("n_meet").(string);
+	subject := ctx.GetInput("o_subject").(string);
 	fdate := strings.Split(date, " ")
 
-
+	hour := strings.Split(fdate[1], ":");
 
 
 	auth := smtp.PlainAuth("", sender, apppass, server)
@@ -75,7 +75,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		Speciality: speciality,
 		Practitioner: practitioner,
 		Date: fdate[0],
-		Hour: fdate[1],
+		Hour: hour[0] + ":" + hour[1],
 		Local: local,
 		Meet: meet,
 		Hospital: clinic,

@@ -51,12 +51,11 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	local := ctx.GetInput("local").(string);
 	template:= ctx.GetInput("template").(string)
 	clinic := ctx.GetInput("hospital").(string);
-	meetbd := ctx.GetInput("meet").(*string);
+	meet := ctx.GetInput("meet").(string);
 	subject := ctx.GetInput("subject").(string);
 	fdate := strings.Split(date, " ")
 
 
-	meet := *meetbd
 
 
 	auth := smtp.PlainAuth("", sender, apppass, server)

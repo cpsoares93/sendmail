@@ -62,17 +62,22 @@
     {
       "name": "local",
       "type": "string",
-      "required": false
+      "required": true
     },
     {
       "name": "hospital",
       "type": "string",
-      "required": false
+      "required": true
     },
     {
       "name": "meet",
       "type": "string",
-      "required": false
+      "required": true
+    },
+    {
+      "name": "subject",
+      "type": "string",
+      "required": true
     },
     {
       "name": "template",

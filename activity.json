@@ -93,6 +93,11 @@
       "name": "r_link_footer",
       "type": "string",
       "required": true
+    },
+    {
+      "name": "s_image_footer_alt",
+      "type": "string",
+      "required": true
     }
   ],
   "outputs": [

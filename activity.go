@@ -45,7 +45,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 
 
 	//get input vars
-	//server := ctx.GetInput("a_server").(string)
+	server := ctx.GetInput("a_server").(string)
 	//port := ctx.GetInput("b_port").(string)
 	sender := ctx.GetInput("c_sender").(string)
 	apppass := ctx.GetInput("d_password").(string)
@@ -66,6 +66,27 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	fdate := strings.Split(date, " ")
 	hour := strings.Split(fdate[1], ":");
 
+	//var ics = "BEGIN:VCALENDAR\r" +
+	//	"METHOD:" + ($('status') == "cancelled" ? "CANCEL" : "PUBLISH") + "\r" +
+	//	"PRODID:JMS Integrations\r" +
+	//	"VERSION:2.0\r" +
+	//	"BEGIN:VEVENT\r" +
+	//	"DTSTAMP:" + now.toISOString().replace(/-|:|\.\d{1,}/g, '') + "\r" +
+	//"UID:" + $('id') + "@google.com\r" +
+	//"SEQUENCE:0\r" +
+	//"ORGANIZER;CN=Saúde CUF:MAILTO:agendas.jms@jmellosaude.pt\r" +
+	//"DTSTART:" + new Date($('start')).toISOString().replace(/-|:|\.\d{1,}/g, '') + "\r" +
+	//"DTEND:" + new Date($('end')).toISOString().replace(/-|:|\.\d{1,}/g, '') + "\r" +
+	//"STATUS:" + ($('status') == "cancelled" ? "CANCELLED" : "CONFIRMED") + "\r" +
+	//"CATEGORIES:" + $('description') + "\r" +
+	//"SUMMARY:" + $('description') + "\r" +
+	//"CLASS:PUBLIC\r" +
+	//"TRANSP:" + ($('status') == "cancelled" ? "TRANSPARENT" : "OPAQUE") + "\r" +
+	//"END:VEVENT\r" +
+	//"END:VCALENDAR\r";
+
+
+
 	//create ics object
 	cal := ics.NewCalendar()
 	cal.SetMethod(ics.MethodPublish)
@@ -85,7 +106,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	//create email
 
 	var (
-		serverAddr = "smtp.gmail.com"
+		serverAddr = server
 		password   = apppass
 		emailAddr  = sender
 		portNumber = 465
@@ -172,9 +193,6 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	r := NewRequest([]string{ercpnt}, subject , "")
 	error1 := r.ParseTemplate(template + ".html", templateData)
 	if error1 := r.ParseTemplate(template + ".html", templateData); error1 == nil {
-		//ok, _ := r.SendEmail(auth, port, sender, tmpFile.Name())
-
-		//fmt.Println(ok)
 		sampleMsg += r.body
 
 		sampleMsg += fmt.Sprintf("\r\n--%s\r\n", delimeter)
@@ -202,56 +220,18 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 
 		log.Print("done.")
 
+		defer os.Remove(filename)
+
 
 	}
 	fmt.Println(error1)
 
-
-
-
-	//auth := smtp.PlainAuth("", sender, apppass, server)
-
-
-
-	//templateData := struct {
-	//	Name string
-	//	Appointment  string
-	//	Speciality string
-	//	Practitioner string
-	//	Date string
-	//	Hour string
-	//	Local string
-	//	Meet string
-	//	Hospital string
-	//	Footer string
-	//	Image string
-	//	Alt string
-	//}{
-	//	Name: patient,
-	//	Appointment:  appointment,
-	//	Speciality: speciality,
-	//	Practitioner: practitioner,
-	//	Date: fdate[0],
-	//	Hour: hour[0] + ":" + hour[1],
-	//	Local: local,
-	//	Meet: meet,
-	//	Hospital: clinic,
-	//	Footer: link_footer,
-	//	Image: image_footer,
-	//	Alt: image_footer_alt,
-	//}
-	//r := NewRequest([]string{ercpnt}, subject , "")
-	//error1 := r.ParseTemplate(template + ".html", templateData)
-	//if error1 := r.ParseTemplate(template + ".html", templateData); error1 == nil {
-	//	ok, _ := r.SendEmail(auth, port, sender, tmpFile.Name())
-	//	fmt.Println(ok)
-	//}
-	//fmt.Println(error1)
-	//ctx.SetOutput("output", "Mail_Sent_Successfully")
 	return true, nil
 }
 
 func CreateTempFile(serializer string) (string){
+	ics:="BEGIN:VCALENDAR\nMETHOD:PUBLISH\nPRODID: Integrations\nVERSION:2.0\nBEGIN:VEVENT\nDTSTAMP:20200515T090000Z\nUID:test@google.com\nSEQUENCE:0	\nORGANIZER;CN=Saúde:MAILTO:teste@gmail.com\nDTSTART:20200520T120000Z\nDTEND:20200520T120000Z\nSTATUS:CONFIRMED\nCATEGORIES:teste\nSUMMARY:teste\nCLASS:PUBLIC\nTRANSP:OPAQUE\nEND:VEVENT\nEND:VCALENDAR"
+
 	tmpFile, err := ioutil.TempFile(os.TempDir(), "*.ics")
 	if err != nil {
 		log.Fatal("Cannot create temporary file", err)
@@ -263,7 +243,7 @@ func CreateTempFile(serializer string) (string){
 	fmt.Println("Created File: " + tmpFile.Name())
 
 	// Example writing to the file
-	text := []byte(serializer)
+	text := []byte(ics)
 	if _, err = tmpFile.Write(text); err != nil {
 		log.Fatal("Failed to write to temporary file", err)
 	}
@@ -290,67 +270,6 @@ func NewRequest(to []string, subject, body string) *Request {
 		body:    body,
 	}
 }
-
-func (r *Request) SendEmail(auth smtp.Auth, port string, sender string, filename string) (bool, error) {
-	//mime := "MIME-version: 1.0;\nContent-Type: multipart/mixed; charset=\"UTF-8\";Content-Transfer-Encoding: 7bit\n\n";
-	//subject := "Subject: " + r.subject + "\n"
-
-	delimeter :=  "xxx"
-
-	filename = "test.txt"
-
-	sampleMsg := "Subject: " + r.subject + "\n"
-	sampleMsg += "MIME-Version: 1.0\r\n"
-	sampleMsg += fmt.Sprintf("Content-Type: multipart/mixed; boundary=\\\"%s\\\"\\r\\n\"", delimeter)
-	sampleMsg += fmt.Sprintf("\r\n--%s\r\n", delimeter)
-	sampleMsg += "Content-Type: text/html; charset=\"utf-8\"\r\n"
-	sampleMsg += "Content-Transfer-Encoding: 7bit\r\n"
-	sampleMsg += fmt.Sprintf("\r\n%s", "<html><body><h1>Hi There</h1>"+
-		"<p>this is sample email (with attachment) sent via golang program</p></body></html>\r\n")
-
-	//place file
-	log.Println("Put file attachment")
-	sampleMsg += fmt.Sprintf("\r\n--%s\r\n", delimeter)
-	sampleMsg += "Content-Type: text/plain; charset=\"utf-8\"\r\n"
-	sampleMsg += "Content-Transfer-Encoding: base64\r\n"
-	sampleMsg += "Content-Disposition: attachment;filename=\"" + filename + "\"\r\n"
-	//read file
-	rawFile, fileErr := ioutil.ReadFile(filename)
-	if fileErr != nil {
-		log.Panic(fileErr)
-	}
-	sampleMsg += "\r\n" + base64.StdEncoding.EncodeToString(rawFile)
-
-
-	msg := []byte(sampleMsg)
-
-
-
-	//fmt.Println(filename)
-	//
-	//test := "Content-Type: text/html; charset=\"utf-8\"\r\n"
-	//test += "Content-Transfer-Encoding: 7bit\r\n"
-	//
-	//attachment := "Content-Type: text/calendar; charset=\"utf-8\"\r\n"
-	//attachment += "Content-Transfer-Encoding: base64\r\n"
-	//attachment += "Content-Disposition: attachment;filename=\""+ filename +"\"\r\n"
-	////read file
-	//rawFile, fileErr := ioutil.ReadFile(filename)
-	//if fileErr != nil {
-	//	log.Panic(fileErr)
-	//}
-	//attachment += "\r\n" + base64.StdEncoding.EncodeToString(rawFile)
-	//msg := []byte(subject + mime + "\n" + test + "\n" + r.body + attachment)
-
-
-	addr := "smtp.gmail.com:"+port
-
-	if err := smtp.SendMail(addr, auth, sender, r.to, msg); err != nil {
-		return false, err
-	}
-	return true, nil
-}
-
 
 func (r *Request) ParseTemplate(templateFileName string, data interface{}) error {
 	t, err := template.ParseFiles(templateFileName)

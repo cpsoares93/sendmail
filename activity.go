@@ -84,6 +84,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	 	"METHOD:" + method + "\r" +
 		"PRODID:Integrations\r" +
 		"VERSION:2.0\r" +
+	 	"X-WR-TIMEZONE:America/Los_AngelesEurope/Lisbon Atlantic/Madeira" +
 		"BEGIN:VEVENT\r" +
 		"DTSTAMP:" + fdate1 + "\r" +
 		"UID:" + appointment_id + "@google.com\r" +
@@ -94,6 +95,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		"STATUS:" + fstatus + "\r" +
 		"CATEGORIES:" + appointment + clinic + "\r" +
 		"SUMMARY:" + appointment + "\r" +
+		"LOCATION:" + local  + "\r" +
 		"CLASS:PUBLIC\r" +
 		"TRANSP:" + transp + "\r" +
 		"END:VEVENT\r" +

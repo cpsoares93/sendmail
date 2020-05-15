@@ -162,21 +162,52 @@ func (r *Request) SendEmail(auth smtp.Auth, port string, sender string, filename
 	mime := "MIME-version: 1.0;\nContent-Type: multipart/mixed; charset=\"UTF-8\";Content-Transfer-Encoding: 7bit\n\n";
 	subject := "Subject: " + r.subject + "\n"
 
-	fmt.Println(filename)
+	delimeter :=  "xxx"
 
-	test := "Content-Type: text/html; charset=\"utf-8\"\r\n"
-	test += "Content-Transfer-Encoding: 7bit\r\n"
+	filename = "test.txt"
 
-	attachment := "Content-Type: text/calendar; charset=\"utf-8\"\r\n"
-	attachment += "Content-Transfer-Encoding: base64\r\n"
-	attachment += "Content-Disposition: attachment;filename=\""+ filename +"\"\r\n"
+	sampleMsg := "Subject: " + r.subject + "\n"
+	sampleMsg += "MIME-Version: 1.0\r\n"
+	sampleMsg += fmt.Sprintf("Content-Type: multipart/mixed; boundary=\\\"%s\\\"\\r\\n\"", delimeter)
+	sampleMsg += fmt.Sprintf("\r\n--%s\r\n", delimeter)
+	sampleMsg += "Content-Type: text/html; charset=\"utf-8\"\r\n"
+	sampleMsg += "Content-Transfer-Encoding: 7bit\r\n"
+	sampleMsg += fmt.Sprintf("\r\n%s", "<html><body><h1>Hi There</h1>"+
+		"<p>this is sample email (with attachment) sent via golang program</p></body></html>\r\n")
+
+	//place file
+	log.Println("Put file attachment")
+	sampleMsg += fmt.Sprintf("\r\n--%s\r\n", delimeter)
+	sampleMsg += "Content-Type: text/plain; charset=\"utf-8\"\r\n"
+	sampleMsg += "Content-Transfer-Encoding: base64\r\n"
+	sampleMsg += "Content-Disposition: attachment;filename=\"" + filename + "\"\r\n"
 	//read file
 	rawFile, fileErr := ioutil.ReadFile(filename)
 	if fileErr != nil {
 		log.Panic(fileErr)
 	}
-	attachment += "\r\n" + base64.StdEncoding.EncodeToString(rawFile)
-	msg := []byte(subject + mime + "\n" + test + "\n" + r.body + attachment)
+	sampleMsg += "\r\n" + base64.StdEncoding.EncodeToString(rawFile)
+
+
+	msg := []byte(sampleMsg)
+
+
+
+	//fmt.Println(filename)
+	//
+	//test := "Content-Type: text/html; charset=\"utf-8\"\r\n"
+	//test += "Content-Transfer-Encoding: 7bit\r\n"
+	//
+	//attachment := "Content-Type: text/calendar; charset=\"utf-8\"\r\n"
+	//attachment += "Content-Transfer-Encoding: base64\r\n"
+	//attachment += "Content-Disposition: attachment;filename=\""+ filename +"\"\r\n"
+	////read file
+	//rawFile, fileErr := ioutil.ReadFile(filename)
+	//if fileErr != nil {
+	//	log.Panic(fileErr)
+	//}
+	//attachment += "\r\n" + base64.StdEncoding.EncodeToString(rawFile)
+	//msg := []byte(subject + mime + "\n" + test + "\n" + r.body + attachment)
 
 
 	addr := "smtp.gmail.com:"+port

@@ -78,7 +78,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	date1 := time.Now()
 	fdate1:= date1.Format("20060102T150405Z")
 
-	 ics := "BEGIN:VCALENDAR\r"+
+	 content := "BEGIN:VCALENDAR\r"+
 	 	"METHOD:" + method + "\r" +
 		"PRODID:Integrations\r" +
 		"VERSION:2.0\r" +
@@ -113,7 +113,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	//event.SetDescription("teste")
 	//event.SetSummary("teste1")
 
-	filename1 := CreateTempFile(ics)
+	filename1 := CreateTempFile(content)
 
 	//create email
 
@@ -254,7 +254,7 @@ func CreateTempFile(serializer string) (string){
 	fmt.Println("Created File: " + tmpFile.Name())
 
 	// Example writing to the file
-	text := []byte(ics)
+	text := []byte(serializer)
 	if _, err = tmpFile.Write(text); err != nil {
 		log.Fatal("Failed to write to temporary file", err)
 	}

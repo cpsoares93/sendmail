@@ -75,6 +75,8 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		transp = "OPAQUE"
 	}
 
+	fmt.Println(date)
+
 	date1 := time.Now()
 	fdate1:= date1.Format("20060102T150405Z")
 
@@ -86,7 +88,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		"DTSTAMP:" + fdate1 + "\r" +
 		"UID:" + appointment_id + "@google.com\r" +
 		"SEQUENCE:0\r" +
-		"ORGANIZER;CN=Saúde:MAILTO:test\r" +
+		"ORGANIZER;CN=Saúde:MAILTO:test@gmail.com\r" +
 		"DTSTART:" + parseDate(date) + "\r" +
 		"DTEND:" + parseDate(date) + "\r" +
 		"STATUS:" + fstatus + "\r" +

@@ -159,8 +159,8 @@ func NewRequest(to []string, subject, body string) *Request {
 }
 
 func (r *Request) SendEmail(auth smtp.Auth, port string, sender string, filename string) (bool, error) {
-	mime := "MIME-version: 1.0;\nContent-Type: multipart/mixed; charset=\"UTF-8\";Content-Transfer-Encoding: 7bit\n\n";
-	subject := "Subject: " + r.subject + "\n"
+	//mime := "MIME-version: 1.0;\nContent-Type: multipart/mixed; charset=\"UTF-8\";Content-Transfer-Encoding: 7bit\n\n";
+	//subject := "Subject: " + r.subject + "\n"
 
 	delimeter :=  "xxx"
 

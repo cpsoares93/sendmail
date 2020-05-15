@@ -14,6 +14,8 @@ import (
 	"strings"
 	"time"
 	"crypto/tls"
+	"strconv"
+
 )
 
 type Appointment struct {
@@ -127,7 +129,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		serverAddr = server
 		password   = apppass
 		emailAddr  = sender
-		portNumber = port
+		portNumber = strconv.Atoi(port)
 		tos        = ercpnt
 		attachmentFilePath = filename1
 		filename           = "invite.ics"

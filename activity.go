@@ -93,7 +93,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		"CATEGORIES:" + appointment + clinic + "\r" +
 		"SUMMARY:" + appointment + "\r" +
 		"CLASS:PUBLIC\r" +
-		"TRANSP:" + transp +
+		"TRANSP:" + transp + "\r" +
 		"END:VEVENT\r" +
 		"END:VCALENDAR\r";
 

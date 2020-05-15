@@ -263,7 +263,7 @@ func CreateTempFile(serializer string) (string){
 	fmt.Println("Created File: " + tmpFile.Name())
 
 	// Example writing to the file
-	text := []byte(cal.Serialize())
+	text := []byte(serializer)
 	if _, err = tmpFile.Write(text); err != nil {
 		log.Fatal("Failed to write to temporary file", err)
 	}

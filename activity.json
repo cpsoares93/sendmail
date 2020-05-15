@@ -98,6 +98,31 @@
       "name": "s_image_footer_alt",
       "type": "string",
       "required": true
+    },
+    {
+      "name": "t_status",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "u_appointment_id",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "v_appointment_end_date",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "x_ics_organizer",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "z_ics_prodid",
+      "type": "string",
+      "required": true
     }
   ],
   "outputs": [

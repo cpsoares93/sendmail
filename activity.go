@@ -44,7 +44,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 
 	//get input vars
 	server := ctx.GetInput("a_server").(string)
-	//port := ctx.GetInput("b_port").(string)
+	port := ctx.GetInput("b_port").(string)
 	sender := ctx.GetInput("c_sender").(string)
 	apppass := ctx.GetInput("d_password").(string)
 	ercpnt := ctx.GetInput("l_patient_contact").(string)
@@ -65,6 +65,9 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	status := ctx.GetInput("t_status").(string)
 	fdate := strings.Split(date, " ")
 	hour := strings.Split(fdate[1], ":");
+	enddate := ctx.GetInput("v_appointment_end_date").(string)
+	organizer := ctx.GetInput("x_ics_organizer").(string)
+	prodid := ctx.GetInput("z_ics_prodid").(string)
 
 	method := "CANCEL"
 	fstatus := "CANCELLED"
@@ -82,18 +85,18 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 
 	 content := "BEGIN:VCALENDAR\r"+
 	 	"METHOD:" + method + "\r" +
-		"PRODID:Integrations\r" +
+		"PRODID:"+ prodid+"\r" +
 		"VERSION:2.0\r" +
 		"BEGIN:VEVENT\r" +
 		"DTSTAMP:" + fdate1 + "\r" +
 		"UID:" + appointment_id + "@google.com\r" +
 		"SEQUENCE:0\r" +
-		"ORGANIZER;CN=Saúde:MAILTO:test@gmail.com\r" +
+		"ORGANIZER;"+organizer+"\r" +
 		"DTSTART:" + parseDate(date) + "\r" +
-		"DTEND:" + parseDate(date) + "\r" +
+		"DTEND:" + parseDate(enddate) + "\r" +
 		"STATUS:" + fstatus + "\r" +
-		"CATEGORIES:" + appointment + clinic + "\r" +
-		"SUMMARY:" + appointment + "\r" +
+		"CATEGORIES:" + appointment + " " + clinic + "\r" +
+		"SUMMARY:" + appointment + " " + clinic + "\r" +
 		"LOCATION:" + local  + "\r" +
 		"CLASS:PUBLIC\r" +
 		"TRANSP:" + transp + "\r" +
@@ -124,11 +127,11 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		serverAddr = server
 		password   = apppass
 		emailAddr  = sender
-		portNumber = 465
-		tos        = "carolina.soares@litthub.com"
+		portNumber = port
+		tos        = ercpnt
 		attachmentFilePath = filename1
 		filename           = "invite.ics"
-		delimeter          = "**=myohmy689407924327"
+		delimeter          = "**=cuf689407924327"
 	)
 
 

@@ -71,6 +71,9 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	organizer := ctx.GetInput("x_ics_organizer").(string)
 	prodid := ctx.GetInput("z_ics_prodid").(string)
 
+	cport , e1 := strconv.Atoi(port)
+	fmt.Println(e1)
+
 	method := "CANCEL"
 	fstatus := "CANCELLED"
 	transp := "TRANSPARENT"
@@ -129,7 +132,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		serverAddr = server
 		password   = apppass
 		emailAddr  = sender
-		portNumber = strconv.Atoi(port)
+		portNumber = cport
 		tos        = ercpnt
 		attachmentFilePath = filename1
 		filename           = "invite.ics"

@@ -84,8 +84,6 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	 	"METHOD:" + method + "\r" +
 		"PRODID:Integrations\r" +
 		"VERSION:2.0\r" +
-	 	"X-WR-TIMEZONE:Europe/London" +
-		"X-MS-OLK-FORCEINSPECTOROPEN:TRUE" +
 		"BEGIN:VEVENT\r" +
 		"DTSTAMP:" + fdate1 + "\r" +
 		"UID:" + appointment_id + "@google.com\r" +

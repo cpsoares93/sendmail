@@ -78,8 +78,8 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	fstatus := "CANCELLED"
 	transp := "TRANSPARENT"
 	if(status != "cancelled"){
-		method ="REQUEST"
-		fstatus = "CONFIRMED"
+		method ="PUBLISH"
+		fstatus = "REPLY"
 		transp = "OPAQUE"
 	}
 

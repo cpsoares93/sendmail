@@ -94,7 +94,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		"VERSION:2.0\r" +
 		"BEGIN:VEVENT\r" +
 		"DTSTAMP:" + fdate1 + "\r" +
-		"UID:" + appointment_id + "@google.com\r" +
+		"UID:" + appointment_id + "\r" +
 	 	"SEQUENCE:0\r" +
 		"ORGANIZER;"+organizer+"\r" +
 		"DTSTART:" + parseDate(date) + "\r" +

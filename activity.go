@@ -79,7 +79,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	transp := "TRANSPARENT"
 	if(status != "cancelled"){
 		method ="PUBLISH"
-		fstatus = "REPLY"
+		fstatus = "CONFIRMED"
 		transp = "OPAQUE"
 	}
 
@@ -95,8 +95,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		"BEGIN:VEVENT\r" +
 		"DTSTAMP:" + fdate1 + "\r" +
 		"UID:" + appointment_id + "@google.com\r" +
-	 	"ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;X-NUM-GUESTS=0:mailto:" + ercpnt + "\r" +
-	"SEQUENCE:0\r" +
+	 	"SEQUENCE:0\r" +
 		"ORGANIZER;"+organizer+"\r" +
 		"DTSTART:" + parseDate(date) + "\r" +
 		"DTEND:" + parseDate(enddate) + "\r" +

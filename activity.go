@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 	"github.com/TIBCOSoftware/flogo-lib/logger"
-	"github.com/arran4/golang-ical"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -39,7 +38,6 @@ func (a *sendmail) Metadata() *activity.Metadata {
 	return a.metadata
 }
 
-
 // Eval implements activity.Activity.Eval
 func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 
@@ -63,45 +61,59 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	image_footer := ctx.GetInput("q_image_footer").(string)
 	link_footer := ctx.GetInput("r_link_footer").(string)
 	image_footer_alt := ctx.GetInput("s_image_footer_alt").(string)
+	appointment_id := ctx.GetInput("u_appointment_id").(string)
+	status := ctx.GetInput("t_status").(string)
 	fdate := strings.Split(date, " ")
 	hour := strings.Split(fdate[1], ":");
 
-	//var ics = "BEGIN:VCALENDAR\r" +
-	//	"METHOD:" + ($('status') == "cancelled" ? "CANCEL" : "PUBLISH") + "\r" +
-	//	"PRODID:JMS Integrations\r" +
-	//	"VERSION:2.0\r" +
-	//	"BEGIN:VEVENT\r" +
-	//	"DTSTAMP:" + now.toISOString().replace(/-|:|\.\d{1,}/g, '') + "\r" +
-	//"UID:" + $('id') + "@google.com\r" +
-	//"SEQUENCE:0\r" +
-	//"ORGANIZER;CN=Saúde CUF:MAILTO:agendas.jms@jmellosaude.pt\r" +
-	//"DTSTART:" + new Date($('start')).toISOString().replace(/-|:|\.\d{1,}/g, '') + "\r" +
-	//"DTEND:" + new Date($('end')).toISOString().replace(/-|:|\.\d{1,}/g, '') + "\r" +
-	//"STATUS:" + ($('status') == "cancelled" ? "CANCELLED" : "CONFIRMED") + "\r" +
-	//"CATEGORIES:" + $('description') + "\r" +
-	//"SUMMARY:" + $('description') + "\r" +
-	//"CLASS:PUBLIC\r" +
-	//"TRANSP:" + ($('status') == "cancelled" ? "TRANSPARENT" : "OPAQUE") + "\r" +
-	//"END:VEVENT\r" +
-	//"END:VCALENDAR\r";
+	method := "CANCEL"
+	fstatus := "CANCELLED"
+	transp := "TRANSPARENT"
+	if(status != "cancelled"){
+		method ="PUBLISH"
+		fstatus = "CONFIRMED"
+		transp = "OPAQUE"
+	}
+
+	date1 := time.Now()
+	fdate1:= date1.Format("20060102T150405Z")
+
+	 ics := "BEGIN:VCALENDAR\r"+
+	 	"METHOD:" + method + "\r" +
+		"PRODID:Integrations\r" +
+		"VERSION:2.0\r" +
+		"BEGIN:VEVENT\r" +
+		"DTSTAMP:" + fdate1 + "\r" +
+		"UID:" + appointment_id + "@google.com\r" +
+		"SEQUENCE:0\r" +
+		"ORGANIZER;CN=Saúde:MAILTO:test\r" +
+		"DTSTART:" + parseDate(date) + "\r" +
+		"DTEND:" + parseDate(date) + "\r" +
+		"STATUS:" + fstatus + "\r" +
+		"CATEGORIES:" + appointment + clinic + "\r" +
+		"SUMMARY:" + appointment + "\r" +
+		"CLASS:PUBLIC\r" +
+		"TRANSP:" + transp +
+		"END:VEVENT\r" +
+		"END:VCALENDAR\r";
 
 
 
 	//create ics object
-	cal := ics.NewCalendar()
-	cal.SetMethod(ics.MethodPublish)
-	cal.SetProductId(" Integrations")
-	cal.SetVersion("2.0")
-	event := cal.AddEvent("teste@google.com")
-	event.SetDtStampTime(time.Now())
-	event.SetOrganizer("sender@domain", ics.WithCN("Saúde"))
-	event.SetStartAt(time.Now())
-	event.SetEndAt(time.Now())
-	event.SetStatus(ics.ObjectStatusConfirmed)
-	event.SetDescription("teste")
-	event.SetSummary("teste1")
+	//cal := ics.NewCalendar()
+	//cal.SetMethod(ics.MethodPublish)
+	//cal.SetProductId(" Integrations")
+	//cal.SetVersion("2.0")
+	//event := cal.AddEvent("teste@google.com")
+	//event.SetDtStampTime(time.Now())
+	//event.SetOrganizer("sender@domain", ics.WithCN("Saúde"))
+	//event.SetStartAt(time.Now())
+	//event.SetEndAt(time.Now())
+	//event.SetStatus(ics.ObjectStatusConfirmed)
+	//event.SetDescription("teste")
+	//event.SetSummary("teste1")
 
-	filename1 := CreateTempFile(cal.Serialize())
+	filename1 := CreateTempFile(ics)
 
 	//create email
 
@@ -230,7 +242,6 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 }
 
 func CreateTempFile(serializer string) (string){
-	ics:="BEGIN:VCALENDAR\rMETHOD:PUBLISH\rPRODID: Integrations\rVERSION:2.0\rBEGIN:VEVENT\rDTSTAMP:20200515T090000Z\rUID:test@google.com\rSEQUENCE:0\rORGANIZER;CN=Saúde:MAILTO:teste@gmail.com\rDTSTART:20200520T120000Z\rDTEND:20200520T120000Z\rSTATUS:CONFIRMED\rCATEGORIES:teste\rSUMMARY:teste\rCLASS:PUBLIC\rTRANSP:OPAQUE\rEND:VEVENT\rEND:VCALENDAR"
 
 	tmpFile, err := ioutil.TempFile(os.TempDir(), "*.ics")
 	if err != nil {
@@ -282,4 +293,28 @@ func (r *Request) ParseTemplate(templateFileName string, data interface{}) error
 	}
 	r.body = buf.String()
 	return nil
+}
+
+
+func parseDate(date string) (teste string){
+	teste = ""
+
+	datetime := strings.Split(date, " ")
+	fdate := strings.Split(datetime[0], "/");
+
+	for i := len(fdate) -1; i >= 0; i-- {
+		teste += fdate[i]
+	}
+
+	teste += "T"
+
+	fhour := strings.Split(datetime[1], ":");
+
+	for i := 0; i < len(fhour); i++ {
+		teste += fhour[i]
+	}
+	teste += "Z"
+
+	return teste
+
 }

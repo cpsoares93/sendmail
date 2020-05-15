@@ -45,8 +45,8 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 
 
 	//get input vars
-	server := ctx.GetInput("a_server").(string)
-	port := ctx.GetInput("b_port").(string)
+	//server := ctx.GetInput("a_server").(string)
+	//port := ctx.GetInput("b_port").(string)
 	sender := ctx.GetInput("c_sender").(string)
 	apppass := ctx.GetInput("d_password").(string)
 	ercpnt := ctx.GetInput("l_patient_contact").(string)

@@ -80,7 +80,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	event.SetDescription("teste")
 	event.SetSummary("teste1")
 
-	filename := CreateTempFile(cal.Serialize())
+	filename1 := CreateTempFile(cal.Serialize())
 
 	//create email
 
@@ -90,7 +90,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		emailAddr  = sender
 		portNumber = 465
 		tos        = "carolina.soares@litthub.com"
-		attachmentFilePath = filename
+		attachmentFilePath = filename1
 		filename           = "invite.ics"
 		delimeter          = "**=myohmy689407924327"
 	)

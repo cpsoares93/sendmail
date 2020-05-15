@@ -14,6 +14,7 @@ import (
 	"os"
 	"strings"
 	"time"
+	"crypto/tls"
 )
 
 type Appointment struct {
@@ -42,12 +43,12 @@ func (a *sendmail) Metadata() *activity.Metadata {
 // Eval implements activity.Activity.Eval
 func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 
+
+	//get input vars
 	server := ctx.GetInput("a_server").(string)
 	port := ctx.GetInput("b_port").(string)
 	sender := ctx.GetInput("c_sender").(string)
 	apppass := ctx.GetInput("d_password").(string)
-
-
 	ercpnt := ctx.GetInput("l_patient_contact").(string)
 	appointment := ctx.GetInput("e_appointment").(string)
 	speciality := ctx.GetInput("f_speciality").(string)
@@ -63,12 +64,9 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	link_footer := ctx.GetInput("r_link_footer").(string)
 	image_footer_alt := ctx.GetInput("s_image_footer_alt").(string)
 	fdate := strings.Split(date, " ")
-
 	hour := strings.Split(fdate[1], ":");
 
-
-
-
+	//create ics object
 	cal := ics.NewCalendar()
 	cal.SetMethod(ics.MethodPublish)
 	cal.SetProductId(" Integrations")
@@ -82,29 +80,67 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	event.SetDescription("teste")
 	event.SetSummary("teste1")
 
+	filename := CreateTempFile(cal.Serialize())
 
-	tmpFile, err := ioutil.TempFile(os.TempDir(), "*.ics")
-	if err != nil {
-		log.Fatal("Cannot create temporary file", err)
+	//create email
+
+	var (
+		serverAddr = "smtp.gmail.com"
+		password   = apppass
+		emailAddr  = sender
+		portNumber = 465
+		tos        = "carolina.soares@litthub.com"
+		attachmentFilePath = filename
+		filename           = "invite.ics"
+		delimeter          = "**=myohmy689407924327"
+	)
+
+
+	tlsConfig := tls.Config{
+		ServerName:         serverAddr,
+		InsecureSkipVerify: true,
 	}
 
-	// Remember to clean up the file afterwards
-	//defer os.Remove(tmpFile.Name())
+	conn, connErr := tls.Dial("tcp", fmt.Sprintf("%s:%d", serverAddr, portNumber), &tlsConfig)
+	if connErr != nil {
+		log.Panic(connErr)
+	}
+	defer conn.Close()
 
-	fmt.Println("Created File: " + tmpFile.Name())
+	client, clientErr := smtp.NewClient(conn, serverAddr)
+	if clientErr != nil {
+		log.Panic(clientErr)
+	}
+	defer client.Close()
 
-	// Example writing to the file
-	text := []byte(cal.Serialize())
-	if _, err = tmpFile.Write(text); err != nil {
-		log.Fatal("Failed to write to temporary file", err)
+	auth := smtp.PlainAuth("", emailAddr, password, serverAddr)
+
+	if err := client.Auth(auth); err != nil {
+		log.Panic(err)
 	}
 
-	// Close the file
-	if err := tmpFile.Close(); err != nil {
-		log.Fatal(err)
+	if err := client.Mail(emailAddr); err != nil {
+		log.Panic(err)
 	}
 
-	auth := smtp.PlainAuth("", sender, apppass, server)
+	if err := client.Rcpt(tos); err != nil {
+		log.Panic(err)
+	}
+
+	writer, writerErr := client.Data()
+	if writerErr != nil {
+		log.Panic(writerErr)
+	}
+
+	sampleMsg := fmt.Sprintf("From: %s\r\n", emailAddr)
+	sampleMsg += fmt.Sprintf("To: %s\r\n", tos)
+	sampleMsg += "Subject: "+subject +"\r\n"
+	sampleMsg += "MIME-Version: 1.0\r\n"
+	sampleMsg += fmt.Sprintf("Content-Type: multipart/mixed; boundary=\"%s\"\r\n", delimeter)
+	sampleMsg += fmt.Sprintf("\r\n--%s\r\n", delimeter)
+	sampleMsg += "Content-Type: text/html; charset=\"utf-8\"\r\n"
+	sampleMsg += "Content-Transfer-Encoding: 7bit\r\n"
+
 	templateData := struct {
 		Name string
 		Appointment  string
@@ -132,15 +168,112 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		Image: image_footer,
 		Alt: image_footer_alt,
 	}
+
 	r := NewRequest([]string{ercpnt}, subject , "")
 	error1 := r.ParseTemplate(template + ".html", templateData)
 	if error1 := r.ParseTemplate(template + ".html", templateData); error1 == nil {
-		ok, _ := r.SendEmail(auth, port, sender, tmpFile.Name())
-		fmt.Println(ok)
+		//ok, _ := r.SendEmail(auth, port, sender, tmpFile.Name())
+
+		//fmt.Println(ok)
+		sampleMsg += r.body
+
+		sampleMsg += fmt.Sprintf("\r\n--%s\r\n", delimeter)
+		sampleMsg += "Content-Type: text/calendar; charset=\"utf-8\"\r\n"
+		sampleMsg += "Content-Transfer-Encoding: base64\r\n"
+		sampleMsg += "Content-Disposition: attachment;filename=\"" + filename + "\"\r\n"
+
+		rawFile, fileErr := ioutil.ReadFile(attachmentFilePath)
+		if fileErr != nil {
+			log.Panic(fileErr)
+		}
+		sampleMsg += "\r\n" + base64.StdEncoding.EncodeToString(rawFile)
+
+		//write into email client stream writter
+		log.Println("Write content into client writter I/O")
+		if _, err := writer.Write([]byte(sampleMsg)); err != nil {
+			log.Panic(err)
+		}
+
+		if closeErr := writer.Close(); closeErr != nil {
+			log.Panic(closeErr)
+		}
+
+		client.Quit()
+
+		log.Print("done.")
+
+
 	}
 	fmt.Println(error1)
-	ctx.SetOutput("output", "Mail_Sent_Successfully")
+
+
+
+
+	//auth := smtp.PlainAuth("", sender, apppass, server)
+
+
+
+	//templateData := struct {
+	//	Name string
+	//	Appointment  string
+	//	Speciality string
+	//	Practitioner string
+	//	Date string
+	//	Hour string
+	//	Local string
+	//	Meet string
+	//	Hospital string
+	//	Footer string
+	//	Image string
+	//	Alt string
+	//}{
+	//	Name: patient,
+	//	Appointment:  appointment,
+	//	Speciality: speciality,
+	//	Practitioner: practitioner,
+	//	Date: fdate[0],
+	//	Hour: hour[0] + ":" + hour[1],
+	//	Local: local,
+	//	Meet: meet,
+	//	Hospital: clinic,
+	//	Footer: link_footer,
+	//	Image: image_footer,
+	//	Alt: image_footer_alt,
+	//}
+	//r := NewRequest([]string{ercpnt}, subject , "")
+	//error1 := r.ParseTemplate(template + ".html", templateData)
+	//if error1 := r.ParseTemplate(template + ".html", templateData); error1 == nil {
+	//	ok, _ := r.SendEmail(auth, port, sender, tmpFile.Name())
+	//	fmt.Println(ok)
+	//}
+	//fmt.Println(error1)
+	//ctx.SetOutput("output", "Mail_Sent_Successfully")
 	return true, nil
+}
+
+func CreateTempFile(serializer string) (string){
+	tmpFile, err := ioutil.TempFile(os.TempDir(), "*.ics")
+	if err != nil {
+		log.Fatal("Cannot create temporary file", err)
+	}
+
+	// Remember to clean up the file afterwards
+	//defer os.Remove(tmpFile.Name())
+
+	fmt.Println("Created File: " + tmpFile.Name())
+
+	// Example writing to the file
+	text := []byte(cal.Serialize())
+	if _, err = tmpFile.Write(text); err != nil {
+		log.Fatal("Failed to write to temporary file", err)
+	}
+
+	// Close the file
+	if err := tmpFile.Close(); err != nil {
+		log.Fatal(err)
+	}
+
+	return tmpFile.Name()
 }
 
 type Request struct {

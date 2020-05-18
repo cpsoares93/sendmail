@@ -43,33 +43,38 @@ func (a *sendmail) Metadata() *activity.Metadata {
 func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 
 	//get input vars
-	server := ctx.GetInput("a_server").(string)
-	port := ctx.GetInput("b_port").(string)
-	sender := ctx.GetInput("c_sender").(string)
-	apppass := ctx.GetInput("d_password").(string)
-	ercpnt := ctx.GetInput("l_patient_contact").(string)
-	appointment := ctx.GetInput("e_appointment").(string)
-	speciality := ctx.GetInput("f_speciality").(string)
-	patient := ctx.GetInput("j_patient").(string)
-	practitioner := ctx.GetInput("m_practitioner").(string)
-	date := ctx.GetInput("i_date").(string)
-	template := ctx.GetInput("p_template").(string)
-	clinic := ctx.GetInput("g_hospital").(string)
-	meet := ctx.GetInput("n_meet").(string)
-	subject := ctx.GetInput("o_subject").(string)
-	image_footer := ctx.GetInput("q_image_footer").(string)
-	link_footer := ctx.GetInput("r_link_footer").(string)
-	image_footer_alt := ctx.GetInput("s_image_footer_alt").(string)
-	appointment_id := ctx.GetInput("u_appointment_id").(string)
-	status := ctx.GetInput("t_status").(string)
-	fdate := strings.Split(date, " ")
-	hour := strings.Split(fdate[1], ":")
-	enddate := ctx.GetInput("v_appointment_end_date").(string)
-	organizer := ctx.GetInput("x_ics_organizer").(string)
-	prodid := ctx.GetInput("z_ics_prodid").(string)
-
+	server := ctx.GetInput("1_smtp_server").(string)
+	port := ctx.GetInput("1_smtp_port").(string)
 	cport, e1 := strconv.Atoi(port)
 	fmt.Println(e1)
+	sender := ctx.GetInput("1_smtp_sender").(string)
+	apppass := ctx.GetInput("1_smtp_password").(string)
+
+	appointment := ctx.GetInput("2_appointment_name").(string)
+	date := ctx.GetInput("2_appointment_date").(string)
+	fdate := strings.Split(date, " ")
+	hour := strings.Split(fdate[1], ":")
+	clinic := ctx.GetInput("2_appointment_hospital").(string)
+	meet := ctx.GetInput("2_appointment_meet").(string)
+	subject := ctx.GetInput("2_appointment_subject").(string)
+	status := ctx.GetInput("2_appointment_status").(string)
+	appointment_id := ctx.GetInput("2_appointment_id").(string)
+	enddate := ctx.GetInput("2_appointment_end_date").(string)
+
+	ercpnt := ctx.GetInput("3_patient_contact").(string)
+	patient := ctx.GetInput("3_patient_name").(string)
+
+	practitioner := ctx.GetInput("4_practitioner_name").(string)
+
+	template := ctx.GetInput("5_template_name").(string)
+	image_footer := ctx.GetInput("5_template_image_footer").(string)
+	link_footer := ctx.GetInput("5_template_link_footer").(string)
+	image_footer_alt := ctx.GetInput("5_template_image_footer_alt").(string)
+
+	organizer := ctx.GetInput("6_ics_organizer").(string)
+	prodid := ctx.GetInput("6_ics_prodid").(string)
+
+
 
 	method := "CANCEL"
 	fstatus := "CANCELLED"
@@ -80,7 +85,6 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		transp = "OPAQUE"
 	}
 
-	fmt.Println(date)
 
 	date1 := time.Now()
 	fdate1 := date1.Format("20060102T150405Z")

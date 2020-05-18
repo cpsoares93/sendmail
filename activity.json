@@ -10,112 +10,107 @@
   "inputs":[
     
 	{
-      "name": "a_server",
+      "name": "1_smtp_server",
       "type": "string",
       "required": true
     },
 	{
-      "name": "b_port",
+      "name": "1_smtp_port",
       "type": "string",
       "required": true
     },
 	{
-      "name": "c_sender",
+      "name": "1_smtp_sender",
       "type": "string",
       "required": true
     },
 	{
-      "name": "d_password",
+      "name": "1_smtp_password",
       "type": "string",
       "required": true
     },
     {
-      "name": "l_patient_contact",
+      "name": "3_patient_contact",
       "type": "string",
       "required": true
     },
     {
-      "name": "e_appointment",
+      "name": "2_appointment_name",
       "type": "string",
       "required": true
     },
     {
-      "name": "j_patient",
+      "name": "3_patient_name",
       "type": "string",
       "required": true
     },
     {
-      "name": "f_speciality",
+      "name": "4_practitioner_name",
       "type": "string",
       "required": false
     },
     {
-      "name": "m_practitioner",
+      "name": "2_appointment_date",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "2_appointment_hospital",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "2_appointment_meet",
       "type": "string",
       "required": false
     },
     {
-      "name": "i_date",
+      "name": "2_appointment_subject",
       "type": "string",
       "required": true
     },
     {
-      "name": "g_hospital",
+      "name": "5_template_name",
       "type": "string",
       "required": true
     },
     {
-      "name": "n_meet",
-      "type": "string",
-      "required": false
-    },
-    {
-      "name": "o_subject",
+      "name": "5_template_image_footer",
       "type": "string",
       "required": true
     },
     {
-      "name": "p_template",
+      "name": "5_template_link_footer",
       "type": "string",
       "required": true
     },
     {
-      "name": "q_image_footer",
+      "name": "5_template_image_footer_alt",
       "type": "string",
       "required": true
     },
     {
-      "name": "r_link_footer",
+      "name": "2_appointment_status",
       "type": "string",
       "required": true
     },
     {
-      "name": "s_image_footer_alt",
+      "name": "2_appointment_id",
       "type": "string",
       "required": true
     },
     {
-      "name": "t_status",
+      "name": "2_appointment_end_date",
       "type": "string",
       "required": true
     },
     {
-      "name": "u_appointment_id",
+      "name": "6_ics_organizer",
       "type": "string",
       "required": true
     },
     {
-      "name": "v_appointment_end_date",
-      "type": "string",
-      "required": true
-    },
-    {
-      "name": "x_ics_organizer",
-      "type": "string",
-      "required": true
-    },
-    {
-      "name": "z_ics_prodid",
+      "name": "6_ics_prodid",
       "type": "string",
       "required": true
     }

@@ -172,7 +172,6 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	templateData := struct {
 		Name         string
 		Appointment  string
-		Speciality   string
 		Practitioner string
 		Date         string
 		Hour         string
@@ -184,7 +183,6 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	}{
 		Name:         patient,
 		Appointment:  appointment,
-		Speciality:   speciality,
 		Practitioner: practitioner,
 		Date:         fdate[0],
 		Hour:         hour[0] + ":" + hour[1],

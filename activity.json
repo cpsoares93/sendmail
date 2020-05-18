@@ -60,11 +60,6 @@
       "required": true
     },
     {
-      "name": "h_local",
-      "type": "string",
-      "required": true
-    },
-    {
       "name": "g_hospital",
       "type": "string",
       "required": true

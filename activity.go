@@ -2,6 +2,7 @@ package sendmail
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/base64"
 	"fmt"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
@@ -11,11 +12,9 @@ import (
 	"log"
 	"net/smtp"
 	"os"
+	"strconv"
 	"strings"
 	"time"
-	"crypto/tls"
-	"strconv"
-
 )
 
 type Appointment struct {
@@ -43,7 +42,6 @@ func (a *sendmail) Metadata() *activity.Metadata {
 // Eval implements activity.Activity.Eval
 func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 
-
 	//get input vars
 	server := ctx.GetInput("a_server").(string)
 	port := ctx.GetInput("b_port").(string)
@@ -55,8 +53,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	patient := ctx.GetInput("j_patient").(string)
 	practitioner := ctx.GetInput("m_practitioner").(string)
 	date := ctx.GetInput("i_date").(string)
-	local := ctx.GetInput("h_local").(string);
-	template:= ctx.GetInput("p_template").(string)
+	template := ctx.GetInput("p_template").(string)
 	clinic := ctx.GetInput("g_hospital").(string)
 	meet := ctx.GetInput("n_meet").(string)
 	subject := ctx.GetInput("o_subject").(string)
@@ -66,19 +63,19 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	appointment_id := ctx.GetInput("u_appointment_id").(string)
 	status := ctx.GetInput("t_status").(string)
 	fdate := strings.Split(date, " ")
-	hour := strings.Split(fdate[1], ":");
+	hour := strings.Split(fdate[1], ":")
 	enddate := ctx.GetInput("v_appointment_end_date").(string)
 	organizer := ctx.GetInput("x_ics_organizer").(string)
 	prodid := ctx.GetInput("z_ics_prodid").(string)
 
-	cport , e1 := strconv.Atoi(port)
+	cport, e1 := strconv.Atoi(port)
 	fmt.Println(e1)
 
 	method := "CANCEL"
 	fstatus := "CANCELLED"
 	transp := "TRANSPARENT"
-	if(status != "cancelled"){
-		method ="PUBLISH"
+	if status != "cancelled" {
+		method = "PUBLISH"
 		fstatus = "CONFIRMED"
 		transp = "OPAQUE"
 	}
@@ -86,59 +83,42 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	fmt.Println(date)
 
 	date1 := time.Now()
-	fdate1:= date1.Format("20060102T150405Z")
+	fdate1 := date1.Format("20060102T150405Z")
 
-	 content := "BEGIN:VCALENDAR\r"+
-	 	"METHOD:" + method + "\r" +
-		"PRODID:"+ prodid+"\r" +
+	content := "BEGIN:VCALENDAR\r" +
+		"METHOD:" + method + "\r" +
+		"PRODID:" + prodid + "\r" +
 		"VERSION:2.0\r" +
 		"BEGIN:VEVENT\r" +
 		"DTSTAMP:" + fdate1 + "\r" +
 		"UID:" + appointment_id + "\r" +
-	 	"SEQUENCE:0\r" +
-		"ORGANIZER;"+organizer+"\r" +
+		"SEQUENCE:0\r" +
+		"ORGANIZER;" + organizer + "\r" +
 		"DTSTART:" + parseDate(date) + "\r" +
 		"DTEND:" + parseDate(enddate) + "\r" +
 		"STATUS:" + fstatus + "\r" +
 		"CATEGORIES:" + appointment + " " + clinic + "\r" +
 		"SUMMARY:" + appointment + " " + clinic + "\r" +
-		"LOCATION:" + local  + "\r" +
 		"CLASS:PUBLIC\r" +
 		"TRANSP:" + transp + "\r" +
 		"END:VEVENT\r" +
-		"END:VCALENDAR\r";
+		"END:VCALENDAR\r"
 
-
-
-	//create ics object
-	//cal := ics.NewCalendar()
-	//cal.SetMethod(ics.MethodPublish)
-	//cal.SetProductId(" Integrations")
-	//cal.SetVersion("2.0")
-	//event := cal.AddEvent("teste@google.com")
-	//event.SetDtStampTime(time.Now())
-	//event.SetOrganizer("sender@domain", ics.WithCN("Saúde"))
-	//event.SetStartAt(time.Now())
-	//event.SetEndAt(time.Now())
-	//event.SetStatus(ics.ObjectStatusConfirmed)
-	//event.SetDescription("teste")
-	//event.SetSummary("teste1")
 
 	filename1 := CreateTempFile(content)
 
 	//create email
 
 	var (
-		serverAddr = server
-		password   = apppass
-		emailAddr  = sender
-		portNumber = cport
-		tos        = ercpnt
+		serverAddr         = server
+		password           = apppass
+		emailAddr          = sender
+		portNumber         = cport
+		tos                = ercpnt
 		attachmentFilePath = filename1
 		filename           = "invite.ics"
 		delimeter          = "**=cuf689407924327"
 	)
-
 
 	tlsConfig := tls.Config{
 		ServerName:         serverAddr,
@@ -178,7 +158,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 
 	sampleMsg := fmt.Sprintf("From: %s\r\n", emailAddr)
 	sampleMsg += fmt.Sprintf("To: %s\r\n", tos)
-	sampleMsg += "Subject: "+subject +"\r\n"
+	sampleMsg += "Subject: " + subject + "\r\n"
 	sampleMsg += "MIME-Version: 1.0\r\n"
 	sampleMsg += fmt.Sprintf("Content-Type: multipart/mixed; boundary=\"%s\"\r\n", delimeter)
 	sampleMsg += fmt.Sprintf("\r\n--%s\r\n", delimeter)
@@ -186,36 +166,34 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	sampleMsg += "Content-Transfer-Encoding: 7bit\r\n"
 
 	templateData := struct {
-		Name string
+		Name         string
 		Appointment  string
-		Speciality string
+		Speciality   string
 		Practitioner string
-		Date string
-		Hour string
-		Local string
-		Meet string
-		Hospital string
-		Footer string
-		Image string
-		Alt string
+		Date         string
+		Hour         string
+		Meet         string
+		Hospital     string
+		Footer       string
+		Image        string
+		Alt          string
 	}{
-		Name: patient,
+		Name:         patient,
 		Appointment:  appointment,
-		Speciality: speciality,
+		Speciality:   speciality,
 		Practitioner: practitioner,
-		Date: fdate[0],
-		Hour: hour[0] + ":" + hour[1],
-		Local: local,
-		Meet: meet,
-		Hospital: clinic,
-		Footer: link_footer,
-		Image: image_footer,
-		Alt: image_footer_alt,
+		Date:         fdate[0],
+		Hour:         hour[0] + ":" + hour[1],
+		Meet:         meet,
+		Hospital:     clinic,
+		Footer:       link_footer,
+		Image:        image_footer,
+		Alt:          image_footer_alt,
 	}
 
-	r := NewRequest([]string{ercpnt}, subject , "")
-	error1 := r.ParseTemplate(template + ".html", templateData)
-	if error1 := r.ParseTemplate(template + ".html", templateData); error1 == nil {
+	r := NewRequest([]string{ercpnt}, subject, "")
+	error1 := r.ParseTemplate(template+".html", templateData)
+	if error1 := r.ParseTemplate(template+".html", templateData); error1 == nil {
 		sampleMsg += r.body
 
 		sampleMsg += fmt.Sprintf("\r\n--%s\r\n", delimeter)
@@ -245,14 +223,13 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 
 		defer os.Remove(filename)
 
-
 	}
 	fmt.Println(error1)
 
 	return true, nil
 }
 
-func CreateTempFile(serializer string) (string){
+func CreateTempFile(serializer string) string {
 
 	tmpFile, err := ioutil.TempFile(os.TempDir(), "*.ics")
 	if err != nil {
@@ -306,20 +283,19 @@ func (r *Request) ParseTemplate(templateFileName string, data interface{}) error
 	return nil
 }
 
-
-func parseDate(date string) (teste string){
+func parseDate(date string) (teste string) {
 	teste = ""
 
 	datetime := strings.Split(date, " ")
-	fdate := strings.Split(datetime[0], "/");
+	fdate := strings.Split(datetime[0], "/")
 
-	for i := len(fdate) -1; i >= 0; i-- {
+	for i := len(fdate) - 1; i >= 0; i-- {
 		teste += fdate[i]
 	}
 
 	teste += "T"
 
-	fhour := strings.Split(datetime[1], ":");
+	fhour := strings.Split(datetime[1], ":")
 
 	for i := 0; i < len(fhour); i++ {
 		teste += fhour[i]

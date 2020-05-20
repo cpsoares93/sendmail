@@ -24,6 +24,11 @@
       "type": "string",
       "required": true
     },
+    {
+      "name": "1_smtp_email_auth",
+      "type": "string",
+      "required": true
+    },
 	{
       "name": "1_smtp_password",
       "type": "string",

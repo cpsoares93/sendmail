@@ -48,6 +48,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	cport, e1 := strconv.Atoi(port)
 	fmt.Println(e1)
 	sender := ctx.GetInput("1_smtp_sender").(string)
+	emailauth := ctx.GetInput("1_smtp_email_auth").(string)
 	apppass := ctx.GetInput("1_smtp_password").(string)
 
 	appointment := ctx.GetInput("2_appointment_name").(string)
@@ -160,7 +161,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		log.Panic(writerErr)
 	}
 
-	sampleMsg := fmt.Sprintf("From: %s\r\n", emailAddr)
+	sampleMsg := fmt.Sprintf("From: %s\r\n", emailauth)
 	sampleMsg += fmt.Sprintf("To: %s\r\n", tos)
 	sampleMsg += "Subject: " + subject + "\r\n"
 	sampleMsg += "MIME-Version: 1.0\r\n"

@@ -148,7 +148,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		log.Panic(err)
 	}
 
-	if err := client.Mail(emailAddr); err != nil {
+	if err := client.Mail(emailauth); err != nil {
 		log.Panic(err)
 	}
 

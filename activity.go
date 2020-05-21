@@ -47,9 +47,9 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	port := ctx.GetInput("1_smtp_port").(string)
 	cport, e1 := strconv.Atoi(port)
 	fmt.Println(e1)
-	sender := ctx.GetInput("1_smtp_sender").(string)
-	emailauth := ctx.GetInput("1_smtp_email_auth").(string)
-	apppass := ctx.GetInput("1_smtp_password").(string)
+	sender := ctx.GetInput("1_smtp_auth_sender").(string)
+	emailauth := ctx.GetInput("1_smtp_from_email").(string)
+	apppass := ctx.GetInput("1_smtp_auth_password").(string)
 
 	appointment := ctx.GetInput("2_appointment_name").(string)
 	date := ctx.GetInput("2_appointment_date").(string)
@@ -126,6 +126,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	)
 
 	tlsConfig := tls.Config{
+		//InsecureSkipVerify: false,
 		ServerName:         serverAddr,
 		InsecureSkipVerify: true,
 	}
@@ -148,9 +149,12 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		log.Panic(err)
 	}
 
+
 	if err := client.Mail(emailauth); err != nil {
 		log.Panic(err)
 	}
+
+	client.Mail(emailauth)
 
 	if err := client.Rcpt(tos); err != nil {
 		log.Panic(err)

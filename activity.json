@@ -20,17 +20,17 @@
       "required": true
     },
 	{
-      "name": "1_smtp_sender",
+      "name": "1_smtp_auth_sender",
       "type": "string",
       "required": true
     },
     {
-      "name": "1_smtp_email_auth",
+      "name": "1_smtp_from_email",
       "type": "string",
       "required": true
     },
 	{
-      "name": "1_smtp_password",
+      "name": "1_smtp_auth_password",
       "type": "string",
       "required": true
     },

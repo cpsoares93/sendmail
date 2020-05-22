@@ -55,12 +55,16 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	date := ctx.GetInput("2_appointment_date").(string)
 	fdate := strings.Split(date, " ")
 	hour := strings.Split(fdate[1], ":")
+
+
 	clinic := ctx.GetInput("2_appointment_hospital").(string)
 	meet := ctx.GetInput("2_appointment_meet").(string)
 	subject := ctx.GetInput("2_appointment_subject").(string)
 	status := ctx.GetInput("2_appointment_status").(string)
 	appointment_id := ctx.GetInput("2_appointment_id").(string)
 	enddate := ctx.GetInput("2_appointment_end_date").(string)
+
+	fmt.Println(enddate)
 
 	ercpnt := ctx.GetInput("3_patient_contact").(string)
 	patient := ctx.GetInput("3_patient_name").(string)

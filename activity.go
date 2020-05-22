@@ -53,8 +53,6 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 
 	appointment := ctx.GetInput("2_appointment_name").(string)
 	date := ctx.GetInput("2_appointment_date").(string)
-	//fdate := strings.Split(date, " ")
-	//hour := strings.Split(fdate[1], ":")
 
 
 	clinic := ctx.GetInput("2_appointment_hospital").(string)
@@ -109,7 +107,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		"UID:" + appointment_id + "\r" +
 		"SEQUENCE:0\r" +
 		"ORGANIZER;" + organizer + "\r" +
-		"DTSTART:" + startDate.Format("20060102T150405Z") + "\r" +
+		"DTSTART:" + date + "\r" +
 		"DTEND:" + fenddade.Format("20060102T150405Z") + "\r" +
 		"STATUS:" + fstatus + "\r" +
 		"CATEGORIES:" + appointment + " " + clinic + "\r" +

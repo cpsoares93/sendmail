@@ -98,25 +98,26 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	fmt.Println(errd)
 
 
-	content := "BEGIN:VCALENDAR\r" +
-		"METHOD:" + method + "\r" +
-		"PRODID:" + prodid + "\r" +
-		"VERSION:2.0\r" +
-		"BEGIN:VTIMEZONE\n"+
-		"TZID:Europe/Lisbon\n"+
-		"LAST-MODIFIED:20050809T050000Z\n "+
-		"BEGIN:STANDARD\n"+
-		"DTSTART:20071104T020000\n"+
-		"TZOFFSETFROM:0000\n "+
-		"TZOFFSETTO:+0100\n "+
-		"TZNAME:EST\n"+
-		"END:STANDARD\n"+
-		"BEGIN:DAYLIGHT\n"+
-		"DTSTART:20070311T020000\n"+
-		"TZOFFSETFROM:+0100\n"+
-		"TZOFFSETTO:0000\n"+
-		"END:DAYLIGHT\n"+
-		"END:VTIMEZONE"+
+	content := "BEGIN:VCALENDAR\r"+
+		"METHOD:" + method + "\r"+
+		"PRODID:" + prodid + "\r"+
+		"VERSION:2.0\r"+
+		"BEGIN:VTIMEZONE\r"+
+		"TZID:Europe/Lisbon\r"+
+		"LAST-MODIFIED:20050809T050000Z\r"+
+		"BEGIN:STANDARD\r"+
+		"DTSTART:20071104T020000\r"+
+		"TZOFFSETFROM:0000\r"+
+		"TZOFFSETTO:+0100\r"+
+		"TZNAME:EST\r"+
+		"END:STANDARD\r"+
+		"BEGIN:DAYLIGHT\r"+
+		"DTSTART:20070311T020000\r"+
+		"TZOFFSETFROM:+0100\r"+
+		"TZOFFSETTO:0000\r"+
+		"TZNAME:EST\r"+
+		"END:DAYLIGHT\r"+
+		"END:VTIMEZONE\r"+
 		"BEGIN:VEVENT\r" +
 		"DTSTAMP:" + fdate1 + "\r" +
 		"UID:" + appointment_id + "\r" +

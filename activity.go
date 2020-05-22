@@ -96,7 +96,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 
 
 	fmt.Println(errd)
-	
+
 	content := "BEGIN:VCALENDAR\r"+
 		"METHOD:" + method + "\r"+
 		"PRODID:" + prodid + "\r"+
@@ -214,7 +214,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		Name:         patient,
 		Appointment:  appointment,
 		Practitioner: practitioner,
-		Date:         strconv.Itoa(startDate.Day()) + "/" + startDate.Month().String(),
+		Date:         strconv.Itoa(startDate.Day()) + "/" + strconv.Itoa(int(startDate.Month())),
 		Hour:         strconv.Itoa(startDate.Hour()) + ":" + strconv.Itoa(startDate.Minute()),
 		Meet:         meet,
 		Hospital:     clinic,

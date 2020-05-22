@@ -96,14 +96,15 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 
 
 	fmt.Println(errd)
-
-
+	
 	content := "BEGIN:VCALENDAR\r"+
 		"METHOD:" + method + "\r"+
 		"PRODID:" + prodid + "\r"+
 		"VERSION:2.0\r"+
+		"X-WR-TIMEZONE:Europe/Lisbon\r" +
 		"BEGIN:VTIMEZONE\r"+
 		"TZID:Europe/Lisbon\r"+
+		"X-LIC-LOCATION:Europe/Lisbon\r" +
 		"LAST-MODIFIED:20050809T050000Z\r"+
 		"BEGIN:STANDARD\r"+
 		"DTSTART:20071104T020000\r"+
@@ -115,7 +116,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		"DTSTART:20070311T020000\r"+
 		"TZOFFSETFROM:+0100\r"+
 		"TZOFFSETTO:+0000\r"+
-		"TZNAME:EST\r"+
+		"TZNAME:EDT\r"+
 		"END:DAYLIGHT\r"+
 		"END:VTIMEZONE\r"+
 		"BEGIN:VEVENT\r" +
@@ -123,8 +124,8 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		"UID:" + appointment_id + "\r" +
 		"SEQUENCE:0\r" +
 		"ORGANIZER;" + organizer + "\r" +
-		"DTSTART:" + startDate.Format("20060102T150405Z") + "\r" +
-		"DTEND:" + fenddade.Format("20060102T150405Z") + "\r" +
+		"DTSTART;TZID=\"Europe/Lisbon\":" + startDate.Format("20060102T150405Z") + "\r" +
+		"DTEND;TZID=\"Europe/Lisbon\":" + fenddade.Format("20060102T150405Z") + "\r" +
 		"STATUS:" + fstatus + "\r" +
 		"CATEGORIES:" + appointment + " " + clinic + "\r" +
 		"SUMMARY:" + appointment + " " + clinic + "\r" +

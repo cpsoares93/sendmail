@@ -63,8 +63,8 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	status := ctx.GetInput("2_appointment_status").(string)
 	appointment_id := ctx.GetInput("2_appointment_id").(string)
 	enddate := ctx.GetInput("2_appointment_end_date").(string)
-
-	fmt.Println(enddate)
+	str := "2014-11-12T11:45:26.371Z"
+	fmt.Println(time.Parse(enddate,str))
 
 	ercpnt := ctx.GetInput("3_patient_contact").(string)
 	patient := ctx.GetInput("3_patient_name").(string)

@@ -53,8 +53,8 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 
 	appointment := ctx.GetInput("2_appointment_name").(string)
 	date := ctx.GetInput("2_appointment_date").(string)
-	fdate := strings.Split(date, " ")
-	hour := strings.Split(fdate[1], ":")
+	//fdate := strings.Split(date, " ")
+	//hour := strings.Split(fdate[1], ":")
 
 
 	clinic := ctx.GetInput("2_appointment_hospital").(string)
@@ -63,8 +63,6 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	status := ctx.GetInput("2_appointment_status").(string)
 	appointment_id := ctx.GetInput("2_appointment_id").(string)
 	enddate := ctx.GetInput("2_appointment_end_date").(string)
-	str := "2014-11-12T11:45:26.371Z"
-	fmt.Println(time.Parse(enddate,str))
 
 	ercpnt := ctx.GetInput("3_patient_contact").(string)
 	patient := ctx.GetInput("3_patient_name").(string)
@@ -94,6 +92,14 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	date1 := time.Now()
 	fdate1 := date1.Format("20060102T150405Z")
 
+	layout := "2006-01-02T15:04:05.000-0700"
+	startDate, errd := time.Parse(layout, date)
+	fenddade, errd := time.Parse(layout, enddate)
+
+
+	fmt.Println(errd)
+
+
 	content := "BEGIN:VCALENDAR\r" +
 		"METHOD:" + method + "\r" +
 		"PRODID:" + prodid + "\r" +
@@ -103,8 +109,8 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		"UID:" + appointment_id + "\r" +
 		"SEQUENCE:0\r" +
 		"ORGANIZER;" + organizer + "\r" +
-		"DTSTART:" + parseDate(date) + "\r" +
-		"DTEND:" + parseDate(enddate) + "\r" +
+		"DTSTART:" + startDate.Format("20060102T150405Z") + "\r" +
+		"DTEND:" + fenddade.Format("20060102T150405Z") + "\r" +
 		"STATUS:" + fstatus + "\r" +
 		"CATEGORIES:" + appointment + " " + clinic + "\r" +
 		"SUMMARY:" + appointment + " " + clinic + "\r" +
@@ -193,8 +199,8 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		Name:         patient,
 		Appointment:  appointment,
 		Practitioner: practitioner,
-		Date:         fdate[0],
-		Hour:         hour[0] + ":" + hour[1],
+		Date:         strconv.Itoa(startDate.Day()) + "/" + startDate.Month().String(),
+		Hour:         strconv.Itoa(startDate.Hour()) + ":" + strconv.Itoa(startDate.Minute()),
 		Meet:         meet,
 		Hospital:     clinic,
 		Footer:       link_footer,

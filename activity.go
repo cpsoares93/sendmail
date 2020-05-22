@@ -102,12 +102,13 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		"METHOD:" + method + "\r" +
 		"PRODID:" + prodid + "\r" +
 		"VERSION:2.0\r" +
+		"BEGIN:VTIMEZONE\n   TZID:Europe/Lisbon\n   LAST-MODIFIED:20050809T050000Z\n   BEGIN:STANDARD\n   DTSTART:20071104T020000\n   TZOFFSETFROM:0000\n   TZOFFSETTO:+0100\n   TZNAME:EST\n   END:STANDARD\n   BEGIN:DAYLIGHT\n   DTSTART:20070311T020000\n   TZOFFSETFROM:+0100\n   TZOFFSETTO:0000\n   TZNAME:EDT\n   END:DAYLIGHT\n   END:VTIMEZONE"+
 		"BEGIN:VEVENT\r" +
 		"DTSTAMP:" + fdate1 + "\r" +
 		"UID:" + appointment_id + "\r" +
 		"SEQUENCE:0\r" +
 		"ORGANIZER;" + organizer + "\r" +
-		"DTSTART:" + date + "\r" +
+		"DTSTART:" + startDate.Format("20060102T150405Z") + "\r" +
 		"DTEND:" + fenddade.Format("20060102T150405Z") + "\r" +
 		"STATUS:" + fstatus + "\r" +
 		"CATEGORIES:" + appointment + " " + clinic + "\r" +

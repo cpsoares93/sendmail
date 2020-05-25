@@ -4,16 +4,17 @@ import (
 	"bytes"
 	"crypto/tls"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 	"github.com/TIBCOSoftware/flogo-lib/logger"
 	"html/template"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"net/smtp"
 	"os"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -61,6 +62,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	status := ctx.GetInput("2_appointment_status").(string)
 	appointment_id := ctx.GetInput("2_appointment_id").(string)
 	enddate := ctx.GetInput("2_appointment_end_date").(string)
+	appointment_int_id := ctx.GetInput("2_appointment_int_id").(string)
 
 	ercpnt := ctx.GetInput("3_patient_contact").(string)
 	patient := ctx.GetInput("3_patient_name").(string)
@@ -75,6 +77,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	organizer := ctx.GetInput("6_ics_organizer").(string)
 	prodid := ctx.GetInput("6_ics_prodid").(string)
 
+	endpoint := ctx.GetInput("1_smtp_error_endpoint").(string)
 
 
 	method := "CANCEL"
@@ -158,12 +161,14 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 
 	conn, connErr := tls.Dial("tcp", fmt.Sprintf("%s:%d", serverAddr, portNumber), &tlsConfig)
 	if connErr != nil {
+		handleError(endpoint, appointment_int_id)
 		log.Panic(connErr)
 	}
 	defer conn.Close()
 
 	client, clientErr := smtp.NewClient(conn, serverAddr)
 	if clientErr != nil {
+		handleError(endpoint, appointment_int_id)
 		log.Panic(clientErr)
 	}
 	defer client.Close()
@@ -171,22 +176,26 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	auth := smtp.PlainAuth("", emailAddr, password, serverAddr)
 
 	if err := client.Auth(auth); err != nil {
+		handleError(endpoint, appointment_int_id)
 		log.Panic(err)
 	}
 
 
 	if err := client.Mail(emailauth); err != nil {
+		handleError(endpoint, appointment_int_id)
 		log.Panic(err)
 	}
 
 	client.Mail(emailauth)
 
 	if err := client.Rcpt(tos); err != nil {
+		handleError(endpoint, appointment_int_id)
 		log.Panic(err)
 	}
 
 	writer, writerErr := client.Data()
 	if writerErr != nil {
+		handleError(endpoint, appointment_int_id)
 		log.Panic(writerErr)
 	}
 
@@ -242,10 +251,12 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		//write into email client stream writter
 		log.Println("Write content into client writter I/O")
 		if _, err := writer.Write([]byte(sampleMsg)); err != nil {
+			handleError(endpoint, appointment_int_id)
 			log.Panic(err)
 		}
 
 		if closeErr := writer.Close(); closeErr != nil {
+			handleError(endpoint, appointment_int_id)
 			log.Panic(closeErr)
 		}
 
@@ -315,25 +326,21 @@ func (r *Request) ParseTemplate(templateFileName string, data interface{}) error
 	return nil
 }
 
-func parseDate(date string) (teste string) {
-	teste = ""
+func handleError(endpoint string, id string) {
+	fmt.Println("Init retry update")
 
-	datetime := strings.Split(date, " ")
-	fdate := strings.Split(datetime[0], "/")
-
-	for i := len(fdate) - 1; i >= 0; i-- {
-		teste += fdate[i]
+	requestBody, err1 := json.Marshal(map[string]string{
+	})
+	if err1 != nil{
+		log.Fatalln(err1)
 	}
-
-	teste += "T"
-
-	fhour := strings.Split(datetime[1], ":")
-
-	for i := 0; i < len(fhour); i++ {
-		teste += fhour[i]
+	response, err := http.Post(endpoint + "/" + id, "application/json", bytes.NewBuffer(requestBody))
+	if err != nil {
+		fmt.Printf("The HTTP request failed with error %s\n", err)
+	} else {
+		data, _ := ioutil.ReadAll(response.Body)
+		fmt.Println(string(data))
 	}
-	teste += "Z"
-
-	return teste
-
+	fmt.Println("Terminating retry update")
 }
+

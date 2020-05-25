@@ -29,6 +29,11 @@
       "type": "string",
       "required": true
     },
+    {
+      "name": "1_smtp_error_endpoint",
+      "type": "string",
+      "required": true
+    },
 	{
       "name": "1_smtp_auth_password",
       "type": "string",
@@ -116,6 +121,11 @@
     },
     {
       "name": "6_ics_prodid",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "2_appointment_int_id",
       "type": "string",
       "required": true
     }

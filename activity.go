@@ -78,6 +78,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	prodid := ctx.GetInput("6_ics_prodid").(string)
 
 	endpoint := ctx.GetInput("1_smtp_error_endpoint").(string)
+	endpoint_email_template := ctx.GetInput("7_endpoint_email_template").(string)
 
 
 	method := "CANCEL"
@@ -253,6 +254,8 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		if _, err := writer.Write([]byte(sampleMsg)); err != nil {
 			handleError(endpoint, appointment_int_id)
 			log.Panic(err)
+		}else {
+			saveTemplateEmail(sampleMsg, endpoint_email_template, appointment_int_id)
 		}
 
 		if closeErr := writer.Close(); closeErr != nil {
@@ -342,5 +345,22 @@ func handleError(endpoint string, id string) {
 		fmt.Println(string(data))
 	}
 	fmt.Println("Terminating retry update")
+}
+
+
+func saveTemplateEmail(text string, endpoint string, id string){
+	requestBody, err1 := json.Marshal(map[string]string{
+		"text" : text,
+	})
+	if err1 != nil{
+		log.Fatalln(err1)
+	}
+	response, err := http.Post(endpoint + "/" + id, "application/json", bytes.NewBuffer(requestBody))
+	if err != nil {
+		fmt.Printf("The HTTP request failed with error %s\n", err)
+	} else {
+		data, _ := ioutil.ReadAll(response.Body)
+		fmt.Println(string(data))
+	}
 }
 

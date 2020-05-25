@@ -128,6 +128,11 @@
       "name": "2_appointment_int_id",
       "type": "string",
       "required": true
+    },
+    {
+      "name": "7_endpoint_email_template",
+      "type": "string",
+      "required": true
     }
   ],
   "outputs": [

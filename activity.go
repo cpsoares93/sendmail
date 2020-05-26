@@ -225,7 +225,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		Appointment:  appointment,
 		Practitioner: practitioner,
 		Date:         strconv.Itoa(startDate.Day()) + "/" + strconv.Itoa(int(startDate.Month())),
-		Hour:         strconv.Itoa(startDate.Hour()) + ":" + strconv.Itoa(startDate.Minute()),
+		Hour:         handlehour(startDate.Hour()) + ":" + handlehour(startDate.Minute()),
 		Meet:         meet,
 		Hospital:     clinic,
 		Footer:       link_footer,
@@ -362,5 +362,18 @@ func saveTemplateEmail(text string, endpoint string, id string){
 		data, _ := ioutil.ReadAll(response.Body)
 		fmt.Println(string(data))
 	}
+}
+
+func handlehour(number int) (formatted string){
+	formatted = strconv.Itoa(number)
+	if number == 0{
+		formatted = "00"
+	}else{
+		text := strconv.Itoa(number)
+		if len(text)  == 1{
+			formatted = "0" + text
+		}
+	}
+	return formatted
 }
 

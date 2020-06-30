@@ -268,7 +268,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 
 		to := []string{tos}
 		err := smtp.SendMail(serverAddr+":"+portNumber, nil, "no-reply@litthub.com", to, []byte(sampleMsg))
-		if(err == nil){
+		if(err != nil){
 			fmt.Println(err)
 			handleError(endpoint, appointment_int_id)
 		}else{

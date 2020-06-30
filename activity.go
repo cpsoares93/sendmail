@@ -48,9 +48,9 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	port := ctx.GetInput("1_smtp_port").(string)
 	//cport, e1 := strconv.Atoi(port)
 	//fmt.Println(e1)
-	sender := ctx.GetInput("1_smtp_auth_sender").(string)
+	//sender := ctx.GetInput("1_smtp_auth_sender").(string)
 	emailauth := ctx.GetInput("1_smtp_from_email").(string)
-	apppass := ctx.GetInput("1_smtp_auth_password").(string)
+	//apppass := ctx.GetInput("1_smtp_auth_password").(string)
 
 	appointment := ctx.GetInput("2_appointment_name").(string)
 	date := ctx.GetInput("2_appointment_date").(string)
@@ -145,8 +145,8 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 
 	var (
 		serverAddr         = server
-		password           = apppass
-		emailAddr          = sender
+		//password           = ""apppass""
+		//emailAddr          = sender
 		portNumber         = port
 		tos                = ercpnt
 		attachmentFilePath = filename1
@@ -174,7 +174,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	//}
 	//defer client.Close()
 
-	auth := smtp.PlainAuth("", emailAddr, password, serverAddr)
+	//auth := smtp.PlainAuth("", emailAddr, password, serverAddr)
 
 
 	//if err := client.Auth(auth); err != nil {
@@ -267,7 +267,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		//client.Quit()
 
 		to := []string{tos}
-		err := smtp.SendMail(serverAddr+":"+portNumber, auth, "no-reply@litthub.com", to, []byte(sampleMsg))
+		err := smtp.SendMail(serverAddr+":"+portNumber, nil, "no-reply@litthub.com", to, []byte(sampleMsg))
 		if(err == nil){
 			fmt.Println(err)
 			handleError(endpoint, appointment_int_id)

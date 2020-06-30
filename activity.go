@@ -2,7 +2,7 @@ package sendmail
 
 import (
 	"bytes"
-	"crypto/tls"
+	//"crypto/tls"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -46,8 +46,8 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	//get input vars
 	server := ctx.GetInput("1_smtp_server").(string)
 	port := ctx.GetInput("1_smtp_port").(string)
-	cport, e1 := strconv.Atoi(port)
-	fmt.Println(e1)
+	//cport, e1 := strconv.Atoi(port)
+	//fmt.Println(e1)
 	sender := ctx.GetInput("1_smtp_auth_sender").(string)
 	emailauth := ctx.GetInput("1_smtp_from_email").(string)
 	apppass := ctx.GetInput("1_smtp_auth_password").(string)
@@ -147,58 +147,59 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		serverAddr         = server
 		password           = apppass
 		emailAddr          = sender
-		portNumber         = cport
+		portNumber         = port
 		tos                = ercpnt
 		attachmentFilePath = filename1
 		filename           = "invite.ics"
 		delimeter          = "**=cuf689407924327"
 	)
 
-	tlsConfig := tls.Config{
-		//InsecureSkipVerify: false,
-		ServerName:         serverAddr,
-		InsecureSkipVerify: true,
-	}
-
-	conn, connErr := tls.Dial("tcp", fmt.Sprintf("%s:%d", serverAddr, portNumber), &tlsConfig)
-	if connErr != nil {
-		handleError(endpoint, appointment_int_id)
-		log.Panic(connErr)
-	}
-	defer conn.Close()
-
-	client, clientErr := smtp.NewClient(conn, serverAddr)
-	if clientErr != nil {
-		handleError(endpoint, appointment_int_id)
-		log.Panic(clientErr)
-	}
-	defer client.Close()
+	//tlsConfig := tls.Config{
+	//	//InsecureSkipVerify: false,
+	//	ServerName:         serverAddr,
+	//	InsecureSkipVerify: true,
+	//}
+	//
+	//conn, connErr := tls.Dial("tcp", fmt.Sprintf("%s:%d", serverAddr, portNumber), &tlsConfig)
+	//if connErr != nil {
+	//	handleError(endpoint, appointment_int_id)
+	//	log.Panic(connErr)
+	//}
+	//defer conn.Close()
+	//
+	//client, clientErr := smtp.NewClient(conn, serverAddr)
+	//if clientErr != nil {
+	//	handleError(endpoint, appointment_int_id)
+	//	log.Panic(clientErr)
+	//}
+	//defer client.Close()
 
 	auth := smtp.PlainAuth("", emailAddr, password, serverAddr)
 
-	if err := client.Auth(auth); err != nil {
-		handleError(endpoint, appointment_int_id)
-		log.Panic(err)
-	}
 
-
-	if err := client.Mail(emailauth); err != nil {
-		handleError(endpoint, appointment_int_id)
-		log.Panic(err)
-	}
-
-	client.Mail(emailauth)
-
-	if err := client.Rcpt(tos); err != nil {
-		handleError(endpoint, appointment_int_id)
-		log.Panic(err)
-	}
-
-	writer, writerErr := client.Data()
-	if writerErr != nil {
-		handleError(endpoint, appointment_int_id)
-		log.Panic(writerErr)
-	}
+	//if err := client.Auth(auth); err != nil {
+	//	handleError(endpoint, appointment_int_id)
+	//	log.Panic(err)
+	//}
+	//
+	//
+	//if err := client.Mail(emailauth); err != nil {
+	//	handleError(endpoint, appointment_int_id)
+	//	log.Panic(err)
+	//}
+	//
+	//client.Mail(emailauth)
+	//
+	//if err := client.Rcpt(tos); err != nil {
+	//	handleError(endpoint, appointment_int_id)
+	//	log.Panic(err)
+	//}
+	//
+	//writer, writerErr := client.Data()
+	//if writerErr != nil {
+	//	handleError(endpoint, appointment_int_id)
+	//	log.Panic(writerErr)
+	//}
 
 	sampleMsg := fmt.Sprintf("From: %s\r\n", emailauth)
 	sampleMsg += fmt.Sprintf("To: %s\r\n", tos)
@@ -251,19 +252,28 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 
 		//write into email client stream writter
 		log.Println("Write content into client writter I/O")
-		if _, err := writer.Write([]byte(sampleMsg)); err != nil {
+		//if _, err := writer.Write([]byte(sampleMsg)); err != nil {
+		//	handleError(endpoint, appointment_int_id)
+		//	log.Panic(err)
+		//}else {
+		//	saveTemplateEmail(sampleMsg, endpoint_email_template, appointment_int_id)
+		//}
+		//
+		//if closeErr := writer.Close(); closeErr != nil {
+		//	handleError(endpoint, appointment_int_id)
+		//	log.Panic(closeErr)
+		//}
+		//
+		//client.Quit()
+
+		to := []string{tos}
+		err := smtp.SendMail(serverAddr+":"+portNumber, auth, "no-reply@litthub.com", to, []byte(sampleMsg))
+		if(err == nil){
+			fmt.Println(err)
 			handleError(endpoint, appointment_int_id)
-			log.Panic(err)
-		}else {
+		}else{
 			saveTemplateEmail(sampleMsg, endpoint_email_template, appointment_int_id)
 		}
-
-		if closeErr := writer.Close(); closeErr != nil {
-			handleError(endpoint, appointment_int_id)
-			log.Panic(closeErr)
-		}
-
-		client.Quit()
 
 		log.Print("done.")
 

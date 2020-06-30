@@ -345,7 +345,7 @@ func handleError(endpoint string, id string) {
 	requestBody, err1 := json.Marshal(map[string]string{
 	})
 	if err1 == nil{
-		log.Fatalln(err1)
+		fmt.Println(err1)
 	}
 	response, err := http.Post(endpoint + "/" + id, "application/json", bytes.NewBuffer(requestBody))
 	if err == nil {

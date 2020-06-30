@@ -344,11 +344,11 @@ func handleError(endpoint string, id string) {
 
 	requestBody, err1 := json.Marshal(map[string]string{
 	})
-	if err1 != nil{
+	if err1 == nil{
 		log.Fatalln(err1)
 	}
 	response, err := http.Post(endpoint + "/" + id, "application/json", bytes.NewBuffer(requestBody))
-	if err != nil {
+	if err == nil {
 		fmt.Printf("The HTTP request failed with error %s\n", err)
 	} else {
 		data, _ := ioutil.ReadAll(response.Body)
@@ -372,6 +372,8 @@ func saveTemplateEmail(text string, endpoint string, id string){
 		data, _ := ioutil.ReadAll(response.Body)
 		fmt.Println(string(data))
 	}
+
+
 }
 
 func handlehour(number int) (formatted string){

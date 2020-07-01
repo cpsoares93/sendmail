@@ -133,6 +133,16 @@
       "name": "7_endpoint_email_template",
       "type": "string",
       "required": true
+    },
+    {
+      "name": "1_smtp_sender_name",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "1_smtp_from_email",
+      "type": "string",
+      "required": true
     }
   ],
   "outputs": [

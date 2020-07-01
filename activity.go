@@ -2,7 +2,6 @@ package sendmail
 
 import (
 	"bytes"
-	//"crypto/tls"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -46,11 +45,18 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	//get input vars
 	server := ctx.GetInput("1_smtp_server").(string)
 	port := ctx.GetInput("1_smtp_port").(string)
-	//cport, e1 := strconv.Atoi(port)
-	//fmt.Println(e1)
-	//sender := ctx.GetInput("1_smtp_auth_sender").(string)
-	emailauth := ctx.GetInput("1_smtp_from_email").(string)
-	//apppass := ctx.GetInput("1_smtp_auth_password").(string)
+	emailauth := ctx.GetInput("1_smtp_auth_email").(string)
+	from_name := ctx.GetInput("1_smtp_sender_name").(string)
+	ssl := ctx.GetInput("1_smtp_ssl").(string)
+	apppass := ""
+    email_from := emailauth
+
+	if ssl != "true" {
+		apppass = ctx.GetInput("1_smtp_auth_password").(string)
+		email_from = ctx.GetInput("1_smtp_from_email").(string)
+
+	}
+
 
 	appointment := ctx.GetInput("2_appointment_name").(string)
 	date := ctx.GetInput("2_appointment_date").(string)
@@ -145,8 +151,6 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 
 	var (
 		serverAddr         = server
-		//password           = ""apppass""
-		//emailAddr          = sender
 		portNumber         = port
 		tos                = ercpnt
 		attachmentFilePath = filename1
@@ -154,54 +158,9 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		delimeter          = "**=cuf689407924327"
 	)
 
-	//tlsConfig := tls.Config{
-	//	//InsecureSkipVerify: false,
-	//	ServerName:         serverAddr,
-	//	InsecureSkipVerify: true,
-	//}
-	//
-	//conn, connErr := tls.Dial("tcp", fmt.Sprintf("%s:%d", serverAddr, portNumber), &tlsConfig)
-	//if connErr != nil {
-	//	handleError(endpoint, appointment_int_id)
-	//	log.Panic(connErr)
-	//}
-	//defer conn.Close()
-	//
-	//client, clientErr := smtp.NewClient(conn, serverAddr)
-	//if clientErr != nil {
-	//	handleError(endpoint, appointment_int_id)
-	//	log.Panic(clientErr)
-	//}
-	//defer client.Close()
+	from := from_name + " <" + email_from + ">";
 
-	//auth := smtp.PlainAuth("", emailAddr, password, serverAddr)
-
-
-	//if err := client.Auth(auth); err != nil {
-	//	handleError(endpoint, appointment_int_id)
-	//	log.Panic(err)
-	//}
-	//
-	//
-	//if err := client.Mail(emailauth); err != nil {
-	//	handleError(endpoint, appointment_int_id)
-	//	log.Panic(err)
-	//}
-	//
-	//client.Mail(emailauth)
-	//
-	//if err := client.Rcpt(tos); err != nil {
-	//	handleError(endpoint, appointment_int_id)
-	//	log.Panic(err)
-	//}
-	//
-	//writer, writerErr := client.Data()
-	//if writerErr != nil {
-	//	handleError(endpoint, appointment_int_id)
-	//	log.Panic(writerErr)
-	//}
-
-	sampleMsg := fmt.Sprintf("From: %s\r\n", emailauth)
+	sampleMsg := fmt.Sprintf("From: %s\r\n", from)
 	sampleMsg += fmt.Sprintf("To: %s\r\n", tos)
 	sampleMsg += "Subject: " + subject + "\r\n"
 	sampleMsg += "MIME-Version: 1.0\r\n"
@@ -250,30 +209,31 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		}
 		sampleMsg += "\r\n" + base64.StdEncoding.EncodeToString(rawFile)
 
-		//write into email client stream writter
+
 		log.Println("Write content into client writter I/O")
-		//if _, err := writer.Write([]byte(sampleMsg)); err != nil {
-		//	handleError(endpoint, appointment_int_id)
-		//	log.Panic(err)
-		//}else {
-		//	saveTemplateEmail(sampleMsg, endpoint_email_template, appointment_int_id)
-		//}
-		//
-		//if closeErr := writer.Close(); closeErr != nil {
-		//	handleError(endpoint, appointment_int_id)
-		//	log.Panic(closeErr)
-		//}
-		//
-		//client.Quit()
 
 		to := []string{tos}
-		err := smtp.SendMail(serverAddr+":"+portNumber, nil, "no-reply@litthub.com", to, []byte(sampleMsg))
-		if(err != nil){
-			fmt.Println(err)
-			handleError(endpoint, appointment_int_id)
+
+
+		if ssl != "true" {
+			auth := smtp.PlainAuth("", emailauth, apppass, serverAddr)
+			err := smtp.SendMail(serverAddr+":"+portNumber, auth, email_from, to, []byte(sampleMsg))
+			if(err != nil){
+				fmt.Println(err)
+				handleError(endpoint, appointment_int_id)
+			}else{
+				saveTemplateEmail(sampleMsg, endpoint_email_template, appointment_int_id)
+			}
 		}else{
-			saveTemplateEmail(sampleMsg, endpoint_email_template, appointment_int_id)
+			err := smtp.SendMail(serverAddr+":"+portNumber, nil, email_from, to, []byte(sampleMsg))
+			if(err != nil){
+				fmt.Println(err)
+				handleError(endpoint, appointment_int_id)
+			}else{
+				saveTemplateEmail(sampleMsg, endpoint_email_template, appointment_int_id)
+			}
 		}
+
 
 		log.Print("done.")
 

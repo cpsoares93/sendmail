@@ -20,7 +20,7 @@
       "required": true
     },
 	{
-      "name": "1_smtp_auth_sender",
+      "name": "1_smtp_auth_email",
       "type": "string",
       "required": true
     },
@@ -36,6 +36,16 @@
     },
 	{
       "name": "1_smtp_auth_password",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "1_smtp_sender_name",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "1_smtp_ssl",
       "type": "string",
       "required": true
     },
@@ -131,16 +141,6 @@
     },
     {
       "name": "7_endpoint_email_template",
-      "type": "string",
-      "required": true
-    },
-    {
-      "name": "1_smtp_sender_name",
-      "type": "string",
-      "required": true
-    },
-    {
-      "name": "1_smtp_from_email",
       "type": "string",
       "required": true
     }

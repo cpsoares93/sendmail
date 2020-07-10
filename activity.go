@@ -120,13 +120,13 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		"DTSTART:20071104T020000\r"+
 		"TZOFFSETFROM:+0100\r"+
 		"TZOFFSETTO:+0000\r"+
-		"TZNAME:EST\r"+
+		"TZNAME:WET\r"+
 		"END:STANDARD\r"+
 		"BEGIN:DAYLIGHT\r"+
 		"DTSTART:20070311T020000\r"+
 		"TZOFFSETFROM:+0000\r"+
 		"TZOFFSETTO:+0100\r"+
-		"TZNAME:EDT\r"+
+		"TZNAME:WEST\r"+
 		"END:DAYLIGHT\r"+
 		"END:VTIMEZONE\r"+
 		"BEGIN:VEVENT\r" +

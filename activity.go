@@ -134,8 +134,10 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 		"UID:" + appointment_id + "\r" +
 		"SEQUENCE:0\r" +
 		"ORGANIZER;" + organizer + "\r" +
-		"DTSTART;TZID=\"Europe/Lisbon\":" + startDate.Format("20060102T150405Z") + "\r" +
-		"DTEND;TZID=\"Europe/Lisbon\":" + fenddade.Format("20060102T150405Z") + "\r" +
+		"DTSTART:" + startDate.Format("20060102T150405Z") + "\r" +
+		"DTEND:" + fenddade.Format("20060102T150405Z") + "\r" +
+		//"DTSTART;TZID=\"Europe/Lisbon\":" + startDate.Format("20060102T150405Z") + "\r" +
+		//"DTEND;TZID=\"Europe/Lisbon\":" + fenddade.Format("20060102T150405Z") + "\r" +
 		"STATUS:" + fstatus + "\r" +
 		"CATEGORIES:" + appointment + " " + clinic + "\r" +
 		"SUMMARY:" + appointment + " " + clinic + "\r" +

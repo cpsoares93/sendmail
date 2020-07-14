@@ -100,9 +100,13 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	date1 := time.Now()
 	fdate1 := date1.Format("20060102T150405Z")
 
+	loc, err := time.LoadLocation("Europe/Lisbon")
 	layout := "2006-01-02T15:04:05.000-0700"
 	startDate, errd := time.Parse(layout, date)
+	startDate = startDate.In(loc)
 	fenddade, errd := time.Parse(layout, enddate)
+	fenddade = fenddade.In(loc)
+
 
 
 	fmt.Println(errd)

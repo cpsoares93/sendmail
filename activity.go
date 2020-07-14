@@ -103,9 +103,8 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	loc, err := time.LoadLocation("Europe/Lisbon")
 	layout := "2006-01-02T15:04:05.000-0700"
 	startDate, errd := time.Parse(layout, date)
-	startDate = startDate.In(loc)
+
 	fenddade, errd := time.Parse(layout, enddate)
-	fenddade = fenddade.In(loc)
 
 
 
@@ -174,6 +173,10 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	sampleMsg += fmt.Sprintf("\r\n--%s\r\n", delimeter)
 	sampleMsg += "Content-Type: text/html; charset=\"utf-8\"\r\n"
 	sampleMsg += "Content-Transfer-Encoding: 7bit\r\n"
+
+	startDate = startDate.In(loc)
+	fenddade = fenddade.In(loc)
+
 
 	templateData := struct {
 		Name         string

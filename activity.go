@@ -48,6 +48,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 	emailauth := ctx.GetInput("1_smtp_auth_email").(string)
 	from_name := ctx.GetInput("1_smtp_sender_name").(string)
 	ssl := ctx.GetInput("1_smtp_ssl").(string)
+	bcc := ctx.GetInput("1_smtp_bcc_email").(string)
 	apppass := ""
     email_from := emailauth
 
@@ -167,6 +168,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 
 	sampleMsg := fmt.Sprintf("From: %s\r\n", from)
 	sampleMsg += fmt.Sprintf("To: %s\r\n", tos)
+	sampleMsg += fmt.Sprintf("BCC: %s\r\n", )
 	sampleMsg += "Subject: " + subject + "\r\n"
 	sampleMsg += "MIME-Version: 1.0\r\n"
 	sampleMsg += fmt.Sprintf("Content-Type: multipart/mixed; boundary=\"%s\"\r\n", delimeter)
@@ -221,7 +223,7 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 
 		log.Println("Write content into client writter I/O")
 
-		to := []string{tos}
+		to := []string{tos, bcc}
 
 
 		if ssl != "true" {

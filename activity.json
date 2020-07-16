@@ -50,6 +50,11 @@
       "required": true
     },
     {
+      "name": "1_smtp_bcc_email",
+      "type": "string",
+      "required": true
+    },
+    {
       "name": "3_patient_contact",
       "type": "string",
       "required": true

@@ -168,7 +168,6 @@ func (a *sendmail) Eval(ctx activity.Context) (done bool, err error) {
 
 	sampleMsg := fmt.Sprintf("From: %s\r\n", from)
 	sampleMsg += fmt.Sprintf("To: %s\r\n", tos)
-	sampleMsg += fmt.Sprintf("BCC: %s\r\n", )
 	sampleMsg += "Subject: " + subject + "\r\n"
 	sampleMsg += "MIME-Version: 1.0\r\n"
 	sampleMsg += fmt.Sprintf("Content-Type: multipart/mixed; boundary=\"%s\"\r\n", delimeter)
